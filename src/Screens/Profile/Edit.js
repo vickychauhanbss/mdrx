@@ -8,7 +8,7 @@ import {
   TextInput,
   ScrollView,
   TouchableOpacity,
-  TouchableWithoutFeedback,Alert, useColorScheme, SafeAreaView
+  TouchableWithoutFeedback,Alert, useColorScheme, SafeAreaView, Platform
 } from 'react-native';
 // import Styles from '../../Components/Styles';
 import {Regex} from '../../Utils/Constant';
@@ -241,6 +241,8 @@ const Register = ({
             alignItems: 'center',
             flexDirection: 'row',
             backgroundColor:'#FFF',
+            marginTop: Platform.OS === 'android' ? '12%' : 0,
+
             // marginTop:'12%',
             paddingBottom:20,
             borderBottomWidth: 1,

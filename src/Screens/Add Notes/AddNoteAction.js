@@ -13,6 +13,8 @@ const AddNoteAction=( slug,form) => {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
+        "Connection":"keep-alive"
+
       },
       data:form,
     };

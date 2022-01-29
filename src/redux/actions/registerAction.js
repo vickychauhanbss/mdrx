@@ -13,6 +13,7 @@ const registerAction = (
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
+      "Connection":"keep-alive"
     },
    
     data: form,
@@ -45,6 +46,8 @@ const OtpVerify = async form => {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
+      "Connection":"keep-alive"
+
     },
 
     data: form,
@@ -77,6 +80,8 @@ const loginAction = async form => {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
+      "Connection":"keep-alive"
+
     },
 
     data: form,
@@ -108,6 +113,8 @@ const ListUserAction = async () => {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
+      "Connection":"keep-alive"
+
     },
   };
   console.log(JSON.stringify(config));
@@ -138,6 +145,8 @@ const UsedData = async () => {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
+      "Connection":"keep-alive"
+
     },
   };
   console.log(JSON.stringify(config));
@@ -174,6 +183,8 @@ const EmailVerify = async form => {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'multipart/form-data',
+      "Connection":"keep-alive"
+
     },
 
     data: form,
@@ -205,6 +216,8 @@ const ResetPin = async form => {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
+      "Connection":"keep-alive"
+
     },
 
     data: form,

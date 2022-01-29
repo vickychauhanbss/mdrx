@@ -1,15 +1,22 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import { StyleSheet, Text, View, Button, Alert, } from 'react-native'
 import { CardField, useConfirmPayment, useStripe } from '@stripe/stripe-react-native';
 // import { Screen } from 'react-native-screens';
 import PaymentDetails from '../../Components/PaymentDetails';
-import { GET_PAYMENT_SHEET, REFRESH_SUBSCRIPTION, SAMPLE_USER_TOKEN } from '../../apis'
+import { GET_PAYMENT_SHEET, REFRESH_SUBSCRIPTION, SAMPLE_USER_TOKEN } from '../../apis';
+
+import {AuthContext} from '../../Utils/AuthContext';
+
 
 const CardDetails = ({ route, navigation }) => {
 
-  const { planType, durationType } = route.params
+  const { planType, durationType } = route.params;
+  const {user, token, cookies } = useContext(AuthContext);
+
   console.log('planType++++++', planType)
   console.log('durationType++++++', durationType)
+  console.log('cookies++++++', cookies)
+
 
 
   const data = JSON.stringify({
@@ -27,7 +34,9 @@ const CardDetails = ({ route, navigation }) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Token ${SAMPLE_USER_TOKEN}`,
+        'Authorization': `Token ${token}`,
+      "Connection":"keep-alive"
+
       },
       body: data
     });
@@ -71,6 +80,8 @@ const CardDetails = ({ route, navigation }) => {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Token ${SAMPLE_USER_TOKEN}`,
+           "Connection":"keep-alive"
+
         }
       });
       console.log(response, 'response')

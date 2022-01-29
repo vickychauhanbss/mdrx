@@ -79,6 +79,8 @@ export const uploadReport = data => dispatch => {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'multipart/form-data',
+      "Connection":"keep-alive"
+
       // , Accept: "application/json"
     },
     // onUploadProgress: onUploadProgress,
@@ -181,6 +183,8 @@ export const EditReport = (slug) => dispatch => {
     url: APP_BASE_URL + 'api/userrecord/' + params ,
     headers: {
       Accept: 'application/json',
+      "Connection":"keep-alive"
+
       // Authorization: "Token fe210d031e380388a25bf012c071c4ff2092e67e"
       // 'Content-Type': 'multipart/form-data',
       // 'Content-Type': 'multipart/form-data',
@@ -275,6 +279,8 @@ export const editProfile = ( user_id, data) => dispatch => {
     data: data,
     headers: {
       Accept: 'application/json',
+      "Connection":"keep-alive"
+
       // 'Content-Type': 'multipart/form-data',
       // Accept: 'application/json',
     },
@@ -322,7 +328,9 @@ export const UpdateReport = (slug, data) => dispatch => {
     data: data,
     headers: {
       // Accept: 'application/json',
-      'Content-type': 'multipart/form-data'
+      'Content-type': 'multipart/form-data',
+      "Connection":"keep-alive"
+
 
     },
     // onUploadProgress: onUploadProgress,
@@ -365,6 +373,8 @@ export const DeleteReport = data => dispatch => {
     data: data,
     headers: {
       Accept: 'application/json',
+      "Connection":"keep-alive"
+
       // 'Content-Type': 'multipart/fom-data',
       // , Accept: "application/json"
     },
@@ -411,7 +421,9 @@ export const GetPaymentPlan = (planType)  => dispatch => {
     data: planType,
     headers: {
       // Accept: 'application/json',
-      'Content-type': 'multipart/form-data'
+      'Content-type': 'multipart/form-data',
+      "Connection":"keep-alive"
+
 
     },
     // onUploadProgress: onUploadProgress,
@@ -452,6 +464,8 @@ export const fetchBillings = () => dispatch => {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'multipart/form-data',
+      "Connection":"keep-alive"
+
       // , Accept: "application/json"
     },
     // onUploadProgress: onUploadProgress,
@@ -539,6 +553,8 @@ export const saveContactus = data => dispatch => {
     data: data,
     headers: {
       Accept: 'application/json',
+      "Connection":"keep-alive"
+
       // 'Content-Type': 'multipart/form-data',
       // , Accept: "application/json"
     },

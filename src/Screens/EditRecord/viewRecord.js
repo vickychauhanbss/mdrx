@@ -79,7 +79,7 @@ export default function viewRecords({
   console.log('editSuccess+++++++++', editSuccess)
 
   
-  const {user, token} = useContext(AuthContext);
+  const {user, token, setCookies} = useContext(AuthContext);
   const refRBSheet = useRef();
   const refRBSheet1 = useRef();
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
@@ -384,9 +384,10 @@ const toggleModal = () => {
       setDate(moment(editDetails.date_record).format('Do MMM, YYYY'));
       setfileName(editDetails.files);
       setNote(editDetails.notes);
-     SetComments(editDetails.comments)
-     setrecordLabel(editDetails.user_record_type)
-     setSelectType(editDetails.record_type_name)
+      SetComments(editDetails.comments)
+      setrecordLabel(editDetails.user_record_type)
+      setSelectType(editDetails.record_type_name)
+      setCookies(editDetails.cookies)
 
       // navigation.navigate('Dashboard');
       editFileMsgRead();
@@ -661,7 +662,8 @@ const renameFiles = () => {
           console.log('Deleted Success');
     }
     else{
-          alert('Record Not Deleted');
+      alert("Record cannot be renamed at this time. Please try again later.");
+
     }
   })
 } 
@@ -701,9 +703,10 @@ const Item = ({title, index}) => (
         color="#0EA1D8"
         style={{alignSelf: 'center'}}
       /> */}
+
       <View
         style={{flex: 0.8, justifyContent: 'center', alignSelf: 'center', fontFamily:fontFamily.Regular, fontSize:14}}>
-       <Text onPress={()=> {setrecord(title.record_file); downloadPdf(title.record_file)}} numberOfLines={3} style={{fontSize: 14, fontFamily:fontFamily.Regular, color:'#000', left:6}}>{title.name === undefined? title.file_name ? title.file_name : title.fileName ? 'Scan_'+new Date().getTime()+'.'+title.type: title.fileName :title.name}</Text>
+       <Text onPress={()=> {setrecord(title.record_file); downloadPdf(title.record_file)}} numberOfLines={3} style={{fontSize: 14, fontFamily:fontFamily.Regular, color:'#000', left:6}}>{title.name === undefined ? title.record_file.split("/").pop() ? title.record_file.split("/").pop() : title.fileName ? 'Scan_'+new Date().getTime()+'.'+title.type: title.fileName :title.name}</Text>
      
       </View>
       <View
@@ -806,6 +809,8 @@ const SmallSheet=(item)=>{
             alignItems: 'center',
             flexDirection: 'row',
             backgroundColor:'#FFF',
+            marginTop: Platform.OS === 'android' ? '8%' : 0,
+
             // marginTop:'8%',
             paddingBottom:20,
             borderBottomWidth: 1,

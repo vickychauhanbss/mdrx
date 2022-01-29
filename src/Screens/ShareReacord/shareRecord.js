@@ -180,6 +180,8 @@ import React, {
             alignItems: 'center',
             flexDirection: 'row',
             backgroundColor:'#FFF',
+            marginTop: Platform.OS === 'android' ? '8%' : 0,
+
             // marginTop:'8%',
             paddingBottom:20,
             borderBottomWidth: 1,

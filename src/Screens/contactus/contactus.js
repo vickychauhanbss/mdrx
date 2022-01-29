@@ -9,7 +9,8 @@ import {
   ScrollView,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  SafeAreaView
+  SafeAreaView,
+  Platform
 } from 'react-native';
 // import Styles from '../../Components/Styles';
 import Toast from 'react-native-simple-toast';
@@ -150,6 +151,7 @@ export default function ContactUs ({
             alignItems: 'center',
             flexDirection: 'row',
             backgroundColor:'#FFF',
+            marginTop: Platform.OS === 'android' ? '8%' : 0,
             // marginTop:'8%',
             paddingBottom:20,
             borderBottomWidth: 1,

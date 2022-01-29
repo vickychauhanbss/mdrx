@@ -11,7 +11,8 @@ import {
   Button,
   StyleSheet,
   ActivityIndicator,
-  SafeAreaView
+  SafeAreaView,
+  Platform
 } from 'react-native';
 import Styles from '../../Components/Styles';
 import {AuthContext} from '../../Utils/AuthContext';
@@ -34,16 +35,21 @@ export default function OpenPdfFile({navigation, route}) {
   const [visible, setVisible] = useState(false);
 
 
-  const {user, token} = useContext(AuthContext);
+  const {user, token, cookies} = useContext(AuthContext);
   const {setToken} = useContext(AuthContext);
   const {setLogout} = useContext(AuthContext);
   const refRBSheet = useRef();
   const [filePath, setFilePath] = useState({});
   const dispatch = useDispatch();
 
+  const [KeyPairId, setKeyPairId] = useState(cookies.CloudFront_Key_Pair_Id);
+  const [Signature, setSignature] = useState(cookies.CloudFront_Signature);
+  const [Policy, setPolicy] = useState(cookies.CloudFront_Policy);
+
 
   const ActivityIndicatorElement = () => {
     //making a view to show to while loading the webpage
+    
     return (
         <View style={styles.activityIndicatorStyle}>
             <ActivityIndicator
@@ -68,8 +74,10 @@ export default function OpenPdfFile({navigation, route}) {
             alignItems: 'center',
             flexDirection: 'row',
             backgroundColor:'#FFF',
+            marginTop: Platform.OS === 'android' ? '8%' : 0,
+
             // marginTop:'8%',
-            paddingBottom:20,
+            // paddingBottom:20,
             borderBottomWidth: 1,
             borderBottomColor: '#D0D0D0',
           }}>
@@ -113,7 +121,11 @@ export default function OpenPdfFile({navigation, route}) {
                 <ScrollView style={styles.container}>
 
                 <Pdf
-                    source={{uri: url}}
+                    source={{uri: url,  
+                      headers: {
+                      Cookie: `CloudFront-Key-Pair-Id=${KeyPairId}; CloudFront-Signature=${Signature}; CloudFront-Policy=${Policy}`
+                    }  
+                  }}
                     onLoadComplete={(numberOfPages,filePath) => {
                         console.log(`Number of pages: ${numberOfPages}`);
                     }}
@@ -160,8 +172,8 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-        justifyContent: 'flex-start',
-        alignItems: 'center',
+        // justifyContent: 'flex-start',
+        // alignItems: 'center',
         // marginTop: 25,
   },
 

@@ -42,12 +42,20 @@ export default function OpenFileUrl({navigation, route}) {
 
 
 
-  const {user, token} = useContext(AuthContext);
+  const {user, token, cookies} = useContext(AuthContext);
   const {setToken} = useContext(AuthContext);
   const {setLogout} = useContext(AuthContext);
   const refRBSheet = useRef();
   const [filePath, setFilePath] = useState({});
   const dispatch = useDispatch();
+
+  console.log('cookies++++++', cookies);
+
+
+  const [KeyPairId, setKeyPairId] = useState(cookies.CloudFront_Key_Pair_Id);
+  const [Signature, setSignature] = useState(cookies.CloudFront_Signature);
+  const [Policy, setPolicy] = useState(cookies.CloudFront_Policy);
+
 
 
   const ActivityIndicatorElement = () => {
@@ -153,6 +161,18 @@ const checkPermission = async () => {
     return (
       <SafeAreaView style={{flex:1, backgroundColor:'#FFFFFF'}}>
 
+
+          {/* <WebView 
+              style={{ flex: 1}}
+              source={{ uri: 'https://mdrxonline.com/dicomviewer/?dcm=https://cloudfront.mdrxonline.com/MdRxProdCopy/8f30121469bb41239a1a/7/dcm/MRBRAIN_2022-01-11-161427.dcm' }}
+              javaScriptEnabled={true}
+              injectedJavaScript={`
+                document.cookie = 'CloudFront-Key-Pair-Id=K1NW43FMEPF75H; SameSite=None; path=/; domain=.mdrxonline.com;';
+                document.cookie = 'eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9jbG91ZGZyb250Lm1kcnhvbmxpbmUuY29tL01kUnhQcm9kQ29weS8yOWRkNmNiZWE2MTg0NGQ2YTllZi8qIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNjQzMzg5MDg4fX19XX0_; SameSite=None; path=/; domain=.mdrxonline.com;';
+                document.cookie = 'CloudFront-Signature=WadJxO0obVxywiqk3L6xP65DLHRUGl3vV-Prqbc4638ctruxxOZyIRcXPPg8ihiALv~0u83bSK3lVroHKfWT0OfX6wLQGURrtDR1TbvsrNTXZo1T9hDQwMSS8nILoUJ4UvRRJIyJz4DFceURhxPjEHkkfbfCthFslU8D~M-CCJbWlNE7iDaH63ZiDoE4sSMjPjb81MWCo6ZQDR~fCJMuYMatVQ1KJswmVH7R4AWT4TX6Nxgpu~wfbyDJuSIkmQ9mLBCIuR4eaT-8GyeIimDPlEM2A3v2YgGW7q87bpa~AsApaLqFrzadTOa4w7BHa5UlkrAMIgpd9LEUJhUDDtibdA__; SameSite=None; path=/; domain=.mdrxonline.com;';
+              `}
+            /> */}
+
        
         <View  style={{
             width: width,
@@ -161,6 +181,8 @@ const checkPermission = async () => {
             alignItems: 'center',
             flexDirection: 'row',
             backgroundColor:'#FFF',
+            marginTop: Platform.OS === 'android' ? '8%' : 0,
+
             // marginTop:'8%',
             paddingBottom:20,
             borderBottomWidth: 1,
@@ -209,12 +231,20 @@ const checkPermission = async () => {
                     style={{flex: 1, marginTop: 0}}
                     //Loading URL
                     source={{
-                            uri: url
-                        }} 
+                        uri: url, 
+                        headers: {
+                            Cookie: `CloudFront-Key-Pair-Id=${KeyPairId}; CloudFront-Signature=${Signature}; CloudFront-Policy=${Policy}`,
+                          }                       
+                     }} 
                     //Enable Javascript support
                     javaScriptEnabled={true}
+                    injectedJavaScript={`
+                    document.cookie = 'CloudFront-Key-Pair-Id=${KeyPairId}; SameSite=None; path=/; domain=.mdrxonline.com;';
+                    document.cookie = 'CloudFront-Policy=${Policy}; SameSite=None; path=/; domain=.mdrxonline.com;';
+                    document.cookie = 'CloudFront-Signature=${Signature}; SameSite=None; path=/; domain=.mdrxonline.com;'; 
+                    `}
                     //For the Cache
-                    domStorageEnabled={true}
+                    // domStorageEnabled={true}
                     onLoadStart={() => setVisible(true)}
                     onLoad={() => setVisible(false)}
                     />

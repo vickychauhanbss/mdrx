@@ -6,7 +6,8 @@ import {
   uploadReport,
   reportMsgRead,
   getRecentReport,
-  DeleteReport
+  DeleteReport,
+  reportDeleteMsgRead
 } from '../redux/Reports/actions';
 // import reports from '../redux/Reports/reducers';
 
@@ -27,7 +28,8 @@ const mapDispatchToProps = {
   uploadReport: uploadReport,
   reportMsgRead: reportMsgRead,
   getRecentReport :getRecentReport,
-  DeleteReport
+  DeleteReport,
+  reportDeleteMsgRead
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

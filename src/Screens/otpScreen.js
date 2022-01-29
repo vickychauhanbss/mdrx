@@ -17,9 +17,10 @@ import OTPInputView from '@twotalltotems/react-native-otp-input';
 import Medical from 'react-native-vector-icons/FontAwesome5';
 
 import { fontFamily } from '../Utils/fonts';
-import { loginAction, OtpVerify } from '../redux/actions/registerAction';
+import { loginAction, OtpVerify, EmailVerify } from '../redux/actions/registerAction';
 import { AuthContext } from '../Utils/AuthContext';
 import CountDown from '../Components/counter';
+
 
 import { moderateScale, scale } from 'react-native-size-matters';
 // import LinearGradient from 'react-native-linear-gradient';
@@ -30,7 +31,7 @@ const OTP = ({route, navigation}) => {
   console.log('route+++++++', route);
   const [otp, setotp] = useState('');
   const {user, token} = useContext(AuthContext);
-  const {setUser, setToken} = useContext(AuthContext);
+  const {setUser, setToken, setCookies} = useContext(AuthContext);
   const [disabled, setDisabled] = useState(true)
   const [disable , setdisable]=useState(false)
   const [counter, SetCounter] = useState(60); // Set here your own timer configurable
@@ -47,7 +48,7 @@ const handleResend = () => {
         console.log('response123456', response.status);
         if (response.status === 200) {
          Alert.alert('Your One Time Password (OTP) has been resent to your registered email address')
-          Toast.show('Your One Time Password (OTP) has been sent to your registered email address ', Toast.LONG);
+          // Toast.show('Your One Time Password (OTP) has been sent to your registered email address ', Toast.LONG);
         }
         else {
         
@@ -87,10 +88,11 @@ const handleResend = () => {
         if (response.status ==200) {
           setToken(response.data.key);    
           setUser(response.data.user);
+          // setCookies(response.data.cookies)
        
           console.log('checkuserSignin', response.data.user);
           Toast.show('Successful Login', Toast.LONG);
-           navigation.navigate('Dashboard')
+          //  navigation.navigate('Dashboard')
 
         } else {
           showAlert();
@@ -99,6 +101,7 @@ const handleResend = () => {
       });
     }
   };
+
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor:'#fff'}}>
@@ -109,7 +112,7 @@ const handleResend = () => {
       <View
       style={{
         zIndex: 1,
-        // top: '7%',
+        top: '10%',
         width:'100%',
         position:'absolute',
       }}>
@@ -118,15 +121,12 @@ const handleResend = () => {
     </View>
 
 
-
-
-
       
       <View  style={{ height: height / 3.6, width: width, backgroundColor: '#0EA1D8', justifyContent: 'flex-end', alignItems: 'center'}}>
 
        
-    <TouchableOpacity  style ={{ left:10, height:25,width:20, position:'absolute', left: 0, top:10}} onPress={() => navigation.goBack(null)}>
-              <Image source={require('../Assets/back.png')}  style={{height: scale(20), width: scale(20)}} />
+    <TouchableOpacity  style ={{ left:10, height:25,width:20, position:'absolute', left: 0, top:20}} onPress={() => navigation.goBack(null)}>
+              <Image source={require('../Assets/back_white.png')}  style={{height: scale(30), width: scale(30)}} />
             </TouchableOpacity>
 
            <View style={{
@@ -219,7 +219,7 @@ const handleResend = () => {
           <Text style={{fontFamily: fontFamily.Regular, fontSize: moderateScale(14)}}> Seconds</Text>
           </View>
        
-      <TouchableOpacity disabled={disabled} style={{top:width * 0.04}}>
+      <TouchableOpacity disabled={disabled} style={{top:width * 0.04}} onPress={handleResend}>
       <Text style={{color:'#0EA1D8', fontFamily: fontFamily.Regular , opacity: disabled ? 0.3: 1, fontSize: width * 0.035}}>Resend</Text>
         </TouchableOpacity>    
 

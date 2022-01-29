@@ -10,6 +10,8 @@ const typeAction = () => {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
+      "Connection":"keep-alive"
+
     },
   };
   console.log(JSON.stringify(config));
@@ -42,6 +44,8 @@ const changePin = form => {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
+      "Connection":"keep-alive"
+
     },
     data: form,
   };
@@ -76,6 +80,8 @@ const EditRecordDelete = form => {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
+      "Connection":"keep-alive"
+
     },
     // data: form,
   };
@@ -111,6 +117,8 @@ const EditRecordRename = (id, paramsData) => {
 
     headers: {
       Accept: 'application/json',
+      "Connection":"keep-alive"
+
       // 'Content-Type': 'application/json',
     },
     // data: form,
@@ -148,6 +156,8 @@ const RecentlyDeletedAction = form => {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
+      "Connection":"keep-alive"
+
     },
     // data: form,
   };
@@ -177,6 +187,8 @@ const  ShareRecordAction= form => {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
+      "Connection":"keep-alive"
+
     },
     data: form,
   };

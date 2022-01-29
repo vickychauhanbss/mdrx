@@ -68,7 +68,7 @@ export default function SidePanel({navigation, route}) {
 
         </View> */}
 
-      <View style={{flexDirection: 'row',alignItems: 'center',height: height * 0.09, borderBottomColor:'#5A6262',borderBottomWidth:0.5, marginTop: 40}}>
+      <View style={{flexDirection: 'row',alignItems: 'center',height: height * 0.09, borderBottomColor:'#5A6262',borderBottomWidth:0.5, marginTop: 20}}>
 
       <Image source={profile} style={{height:scale(25), width: scale(18), marginLeft: 20}} resizeMode={'contain'}/>
         <TouchableOpacity   onPress={() => navigation.navigate('AddProfile')}>

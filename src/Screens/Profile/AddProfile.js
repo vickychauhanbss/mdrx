@@ -9,7 +9,8 @@ import {
   ScrollView,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  SafeAreaView
+  SafeAreaView,
+  Platform
 } from 'react-native';
 // import Styles from '../../Components/Styles';
 import Toast from 'react-native-simple-toast';
@@ -21,6 +22,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { moderateScale, scale } from 'react-native-size-matters';
 
 import CountryPicker, {DEFAULT_THEME} from 'react-native-country-picker-modal';
+import KeyboardAwareScrollView from '../../Components/KeyboardAwareScrollView';
 
 
 import moment from 'moment';
@@ -73,7 +75,7 @@ export default function AddProfile ({
   const reg = /^[0]?[789]\d{9}$/;
 
   const [country, setPicker] = useState({
-    callingCode: ['44'],
+    callingCode:  profileData && profileData[0] && profileData[0].profile_country ? [profileData[0].profile_country] : ['44'],
     cca2: 'GB',
     currency: ['GBP'],
     flag: 'flag-us',
@@ -185,7 +187,7 @@ export default function AddProfile ({
       dob: send,
       profile_fname: fname,
       profile_lname: lname,
-      country: country.callingCode[0],
+      useraccount_country: country.callingCode[0],
       profile_phone_number: mobile,
       profile_code: record,
       relationship:'self'
@@ -235,15 +237,17 @@ export default function AddProfile ({
 
 
   return (
-    <SafeAreaView  style={{flex: 1, backgroundColor: '#FFFFFF'}}  contentContainerStyle={{flex: 1}}>
+    <SafeAreaView  style={{flex: 1, backgroundColor: '#FFFFFF'}}>
       
-     <View  style={{
+        <View  style={{
             width: width,
             height: height * 0.06,
             justifyContent: 'space-between',
             alignItems: 'center',
             flexDirection: 'row',
             backgroundColor:'#FFF',
+            marginTop: Platform.OS === 'android' ? '8%' : 0,
+
             // marginTop:'8%',
             paddingBottom:20,
             borderBottomWidth: 1,
@@ -292,9 +296,14 @@ export default function AddProfile ({
             </View>
         </View>
 
-        <ScrollView>
+        <KeyboardAwareScrollView  style={{ marginBottom: 0 }}
+          keyboardShouldPersistTaps={'always'}
+          scrollEnabled={false}
+          automaticallyAdjustContentInsets={true}
+          bounces={true}
+          showsVerticalScrollIndicator={false}>
 
-      <View
+<View
         style={{  
           padding: 20,margin:10,
             justifyContent:'center'}}>
@@ -360,24 +369,8 @@ export default function AddProfile ({
               lname == '' && submit ? <Text style={{fontSize: moderateScale(11), color:'red', fontFamily:fontFamily.Regular, position:'absolute', left:0, bottom:-14}}>{'Last Name is required'}</Text> : null
             }
            </View>
-        
-  
-        {/* <TextInput
-          placeholder="first name"
-          value={fname}
-          onChangeText={text => {
-            setfname(text);
-          }}
-          style={{
-            borderBottomWidth: 0.2,
-            width: width - 60,
-
-            fontFamily: fontFamily.Regular,
-            fontSize: 14,
-          }}
-        /> */}
        
-       <View style={{ paddingTop:width *0.03 }}>
+            <View style={{ paddingTop:width *0.03 }}>
               <Text style={{alignItem:'start', fontSize: moderateScale(13), fontFamily:fontFamily.Bold, marginBottom:10, color:'gray'}}>Date of Birth</Text>
                 <TouchableOpacity
                     style={{
@@ -420,12 +413,7 @@ export default function AddProfile ({
             </View>
 
 
-<View style={{justifyContent:'flex-start',
-    alignItems:'flex-start', 
-   marginTop:10,
-    flexDirection: 'row',
-    width:'100%'
-    }}>
+          <View style={{justifyContent:'flex-start', alignItems:'flex-start',  marginTop:10,  flexDirection: 'row',  width:'100%'}}>
             <View style={{width: '32%', alignContent:'flex-start', alignItems:'flex-start', alignSelf:'flex-start'}}>
                <Text style={{fontWeight:'600', fontSize:moderateScale(12), fontFamily: fontFamily.Bold,  marginBottom:10, color:'gray'}}>Country code</Text>
               <View style={{width:'80%',
@@ -460,49 +448,49 @@ export default function AddProfile ({
                       </Text>
                     </View>
             {/* <Image source={require('./../Assets/images/mdrxlogo_light.png')} style={{height: scale(60),width:scale(60)}}/> */}
-        </View>
-        <View style={{width: '68%',alignContent:'flex-start', alignItems:'flex-start', alignSelf:'flex-start'}}>
-        <Text style={{fontWeight:'600', fontSize:moderateScale(12), fontFamily: fontFamily.Bold, marginBottom:10, color:'gray'}}>Mobile Number</Text>    
-                <TextInput
-                  onChangeText={text => {
-                      setMobile(text);
-                      if (text.length === 0) {
-                        setValidMobile(false);
-                      }
-                  }}
-                  maxLength={14}
-                  value={mobile}
-                    onBlur={() => {
-                      mobile ? mobileValidiation() : null;
+          </View>
+          <View style={{width: '68%',alignContent:'flex-start', alignItems:'flex-start', alignSelf:'flex-start'}}>
+          <Text style={{fontWeight:'600', fontSize:moderateScale(12), fontFamily: fontFamily.Bold, marginBottom:10, color:'gray'}}>Mobile Number</Text>    
+                  <TextInput
+                    onChangeText={text => {
+                        setMobile(text);
+                        if (text.length === 0) {
+                          setValidMobile(false);
+                        }
                     }}
-                    keyboardType={'number-pad'}
-                
-                  style={{
-                    borderWidth:1,
-                    width: '100%',
-                    height:width *0.11,
-                    color: '#3598f7',
-                    fontSize: moderateScale(15),
-                  fontFamily:fontFamily.Regular,
-                    // fontWeight: 'Regular',
-                    borderColor: '#d3d3d3',
-                    backgroundColor:'#fff',
+                    maxLength={14}
+                    value={mobile}
+                      onBlur={() => {
+                        mobile ? mobileValidiation() : null;
+                      }}
+                      keyboardType={'number-pad'}
+                  
+                    style={{
+                      borderWidth:1,
+                      width: '100%',
+                      height:width *0.11,
+                      color: '#3598f7',
+                      fontSize: moderateScale(15),
+                    fontFamily:fontFamily.Regular,
+                      // fontWeight: 'Regular',
+                      borderColor: '#d3d3d3',
+                      backgroundColor:'#fff',
 
-                    padding: 10,
+                      padding: 10,
 
-                    // marginTop:10
+                      // marginTop:10
 
-                  }}
-                />
+                    }}
+                  />
 
-          {
-            mobile == '' && submit ? <Text style={{fontSize: moderateScale(11), color:'red', fontFamily:fontFamily.Regular, position:'absolute', left:0, bottom:-15}}>{'Mobile number is required'}</Text> : null
-          }
+            {
+              mobile == '' && submit ? <Text style={{fontSize: moderateScale(11), color:'red', fontFamily:fontFamily.Regular, position:'absolute', left:0, bottom:-15}}>{'Mobile number is required'}</Text> : null
+            }
 
-          {
-           mobile && mobile.length <= 9 ? <Text style={{fontFamily:fontFamily.Regular, fontSize:moderateScale(11), color:'red', position:'absolute', left:0, bottom:-15}}>{'Please pick the 10 digit mobile number'}</Text> : null
-          }
-        </View>
+            {
+            mobile && mobile.length <= 9 ? <Text style={{fontFamily:fontFamily.Regular, fontSize:moderateScale(11), color:'red', position:'absolute', left:0, bottom:-15}}>{'Please pick the 10 digit mobile number'}</Text> : null
+            }
+          </View>
         </View>
 
 
@@ -560,40 +548,13 @@ export default function AddProfile ({
                 }}
               />
            </View>
-        {/* <TextInput
-          placeholder="Country"
-          onChangeText={text => {
-            setcountry(text);
-          }}
-          value={country}
-          keyboardType={'email-address'}
-          style={{
-            borderBottomWidth: 0.2,
-            width: width - 60,
-            fontFamily: fontFamily.Regular,
-          }}
-        /> */}
 
-        {/* <TextInput
-          placeholder="Medical Record No"
-          // keyboardType={'number-pad'}
-          value={record}
-          // secureTextEntry={true}
-          onChangeText={text => {
-            setRecord(text);
-          }}
-          style={{
-            borderBottomWidth: 0.5,
-            width: width - 60,
-            fontFamily: fontFamily.Regular,
-          }}
-        /> */}
         <TouchableOpacity
           onPress={
             () => signUpCheck()
             // navigation.navigate('Home')
           }
-          style={{top: width * 0.1, alignContent:'center', alignItems:'center', alignSelf:'center', width:'100%'}}>
+          style={{top:20, alignContent:'center', alignItems:'center', alignSelf:'center', width:'100%'}}>
           <View
             style={{
               height: 47,
@@ -613,7 +574,8 @@ export default function AddProfile ({
           </View>
         </TouchableOpacity>
       </View>
-      </ScrollView>
+      </KeyboardAwareScrollView>
+      {/* </ScrollView> */}
     </SafeAreaView>
   );
 };

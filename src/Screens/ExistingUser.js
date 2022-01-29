@@ -73,6 +73,8 @@ const ExistingUser = ({navigation, props}) => {
       Form.append('email', email.trim());
       Form.append('password', pin);
       EmailVerify(Form).then(response => {
+
+        console.log('login+++++++', response);
         if (response.status== 200) {
           navigation.navigate('OTPScreen', {username: response.data.fname, email: email.trim(), pin: pin})                                        
           
@@ -285,7 +287,7 @@ const styles = StyleSheet.create({
     backgroundColor:'#0EA1D8',
     justifyContent:'center',
     alignItems:"center", 
-    height:'30%', 
+    height:'25%', 
     flexDirection: 'row'
   },
 

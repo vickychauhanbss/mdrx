@@ -11,7 +11,8 @@ import {
   Button,
   StyleSheet,
   ActivityIndicator,
-  SafeAreaView
+  SafeAreaView,
+  Platform
 } from 'react-native';
 import Styles from '../Components/Styles';
 import {AuthContext} from '../Utils/AuthContext';
@@ -70,6 +71,8 @@ function openBillings({navigation, route, fetchBillings, billigLink}) {
             alignItems: 'center',
             flexDirection: 'row',
             backgroundColor:'#FFF',
+            marginTop: Platform.OS === 'android' ? '8%' : 0,
+
             // marginTop:'8%',
             paddingBottom:20,
             borderBottomWidth: 1,

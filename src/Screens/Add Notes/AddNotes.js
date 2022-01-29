@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   Button,
   StyleSheet,
+  Platform,
   SafeAreaView
 } from 'react-native';
 import Styles from '../../Components/Styles';
@@ -76,7 +77,7 @@ export default function AddNotes({navigation, route}) {
             alignItems: 'center',
             flexDirection: 'row',
             backgroundColor:'#FFF',
-            // marginTop:'8%',
+            marginTop: Platform.OS === 'android' ? '8%' : 0,
             paddingBottom:20,
             borderBottomWidth: 1,
             borderBottomColor: '#D0D0D0',

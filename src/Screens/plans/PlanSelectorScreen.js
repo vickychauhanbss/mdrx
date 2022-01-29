@@ -6,7 +6,7 @@ import React, {
     useEffect,
     useLayoutEffect,
   } from 'react';
-import { View, Text, TouchableOpacity, Button , Image, Dimensions, SafeAreaView, ScrollView} from 'react-native'
+import { View, Text, TouchableOpacity, Button , Image, Dimensions, SafeAreaView, ScrollView, Platform} from 'react-native'
 import { Card } from 'react-native-elements'
 import { moderateScale, scale } from 'react-native-size-matters';
 import {AuthContext} from '../../Utils/AuthContext';
@@ -35,6 +35,8 @@ const PlanSelectorScreen = ({ route, navigation }) => {
                 alignItems: 'center',
                 flexDirection: 'row',
                 backgroundColor:'#FFF',
+                marginTop: Platform.OS === 'android' ? '8%' : 0,
+
                 // marginTop:'8%',
                 paddingBottom:20,
                 borderBottomWidth: 1,
@@ -84,9 +86,9 @@ const PlanSelectorScreen = ({ route, navigation }) => {
               </View>
 
 
-              <ScrollView>
+              {/* <ScrollView> */}
 
-              <View style={{flex: 1, backgroundColor: '#fff'}} >
+              {/* <View style={{flex: 1, backgroundColor: '#fff'}} > */}
               <Tab value={index} onChange={setIndex}  variant="primary"   indicatorStyle={{
                   backgroundColor: 'black',
                   height: 3,
@@ -312,10 +314,10 @@ const PlanSelectorScreen = ({ route, navigation }) => {
                 </TabView.Item>
               
               </TabView>
-              </View>
+              {/* </View> */}
 
 
-            </ScrollView>
+            {/* </ScrollView> */}
           </SafeAreaView>
         // </>
     )

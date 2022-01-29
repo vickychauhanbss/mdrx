@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {  useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Card } from 'react-native-elements'
 // import Icon from 'react-native-vector-icons/Entypo'
@@ -6,12 +6,7 @@ import { Card } from 'react-native-elements'
 import { fontFamily } from '../Utils/fonts';
 
 
-const CustomCardPlan = ({ dataUsed, dataTotal, dataUsedPercent, subscribedTo, changeScreen }) => {
-    console.log('dataUsed+++++', dataUsed);
-    console.log('dataTotal+++++', dataTotal);
-    console.log('dataTotal+++++', dataTotal);
-
-
+const CustomCardPlan = ({ dataUsed, dataTotal, dataUsedPercent, subscribedTo, changeScreen , final, leftData}) => {
 
     return (
         // <Card containerStyle={styles.container}>
@@ -27,7 +22,7 @@ const CustomCardPlan = ({ dataUsed, dataTotal, dataUsedPercent, subscribedTo, ch
             </TouchableOpacity>
 
 
-            <Text style={styles.message}>{'You have '} {Number(dataTotal ? dataTotal.split(' ')[0] : 0) - Number(dataTotal ? dataUsed.split(' ')[0] : 0)} {'MB left in your current plan.'}</Text>
+            <Text style={styles.message}>{'You have '} {leftData} {'MB left in your current plan.'}</Text>
 
 
 

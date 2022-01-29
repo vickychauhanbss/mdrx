@@ -37,6 +37,18 @@
 			</dict>
 		</dict>
 	</dict>
+
+
+	<key>NSCameraUsageDescription</key>
+    <string>$(PRODUCT_NAME) would like to use your camera to capture record pictures</string>
+
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>$(PRODUCT_NAME) would like to save photos to your photo gallery</string>
+
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>$(PRODUCT_NAME) would like access to your photo gallery to upload record picture from album</string>
+
+
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>UIAppFonts</key>

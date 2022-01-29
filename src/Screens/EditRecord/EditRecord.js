@@ -626,7 +626,7 @@ const renameFiles = () => {
           console.log('Deleted Success');
     }
     else{
-          alert('Record Not Deleted');
+          alert("Record doesn't renamed. Please try again");
     }
   })
 } 
@@ -668,7 +668,7 @@ const Item = ({title, index}) => (
       /> */}
       <View
         style={{flex: 0.8, justifyContent: 'center', alignSelf: 'center', fontFamily:fontFamily.Regular, fontSize:14}}>
-       <Text onPress={()=> {setrecord(title.record_file); downloadPdf(title.record_file)}} numberOfLines={3} style={{fontSize: 14, fontFamily:fontFamily.Regular, color:'#000', left:6}}>{title.name === undefined? title.file_name ? title.file_name : title.fileName ? 'Scan_'+new Date().getTime()+'.'+title.type: title.fileName :title.name}</Text>
+       <Text onPress={()=> {setrecord(title.record_file); downloadPdf(title.record_file)}} numberOfLines={3} style={{fontSize: 14, fontFamily:fontFamily.Regular, color:'#000', left:6}}>{title.name === undefined? title.record_file.split("/").pop() ? title.record_file.split("/").pop() : title.fileName ? 'Scan_'+new Date().getTime()+'.'+title.type: title.fileName :title.name}</Text>
      
       </View>
       <View
@@ -768,6 +768,8 @@ const SmallSheet=(item)=>{
             alignItems: 'center',
             flexDirection: 'row',
             backgroundColor:'#FFF',
+            marginTop: Platform.OS === 'android' ? '8%' : 0,
+
             // marginTop:'8%',
             paddingBottom:20,
             borderBottomWidth: 1,

@@ -1,4 +1,6 @@
-export const APP_BASE_URL = 'http://ec2-3-99-37-134.ca-central-1.compute.amazonaws.com/';
+// export const APP_BASE_URL = 'http://ec2-3-99-37-134.ca-central-1.compute.amazonaws.com/';
+export const APP_BASE_URL = 'https://mdrxonline.com/';
+
 export const LEARNING_API = {
   BASE_URL: `${APP_BASE_URL}api/`,
   REGISTER_URL: 'usersignup',

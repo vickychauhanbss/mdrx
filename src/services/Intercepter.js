@@ -21,7 +21,7 @@ const AxiosInstance = axios.create({
             return JSON.stringify(data)
         }
       }],
-    headers:{'Content-Type': 'application/json',}
+    headers:{'Content-Type': 'application/json',  "Connection":"keep-alive"}
 })
 
 // Response Interceptor

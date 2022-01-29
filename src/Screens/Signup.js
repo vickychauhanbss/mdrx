@@ -238,7 +238,7 @@ const ShowMaxAlert = (EnteredValue) =>{
           showsVerticalScrollIndicator={false}>
           <View
             style={{
-              height: '20%',
+              height: '10%',
               width: width,
               backgroundColor: '#0EA1D8',
               justifyContent: 'flex-end',
@@ -247,7 +247,7 @@ const ShowMaxAlert = (EnteredValue) =>{
             }}>
             <View
               style={{
-                height: '50%',
+                height: '70%',
                 width: width - 30,
                 backgroundColor: 'white',
                 borderTopRightRadius: 20,
@@ -255,7 +255,7 @@ const ShowMaxAlert = (EnteredValue) =>{
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
-                <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:"center",width:width-80}}>
+                <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:"center",width:width-80, marginTop:10}}>
                   <View style={{marginRight:20}}>
                       <Image source={require('./../Assets/images/mdrxlogo.png')} style={{height: scale(50),width: scale(50)}}/>
                   </View>
@@ -672,6 +672,8 @@ const ShowMaxAlert = (EnteredValue) =>{
 
     </KeyboardAwareScrollView>
     </ScrollView>
+
+    {/* </ScrollView> */}
     </SafeAreaView>
   );
 };

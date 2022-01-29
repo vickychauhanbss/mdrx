@@ -10,7 +10,8 @@ import {
   TouchableOpacity,
   Button,
   StyleSheet,
-  SafeAreaView
+  SafeAreaView,
+  Platform
 } from 'react-native';
 import Styles from '../Components/Styles';
 import {AuthContext} from '../Utils/AuthContext';
@@ -47,6 +48,8 @@ export default function Setting({navigation}) {
             alignItems: 'center',
             flexDirection: 'row',
             backgroundColor:'#FFF',
+            marginTop: Platform.OS === 'android' ? '8%' : 0,
+
             // marginTop:'8%',
             paddingBottom:20,
             borderBottomWidth: 1,

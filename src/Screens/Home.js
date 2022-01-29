@@ -60,7 +60,10 @@ function Home({
   getPatientRecords, 
   getRecentReport,
   recentReport,
-  DeleteReport
+  DeleteReport,
+  reportDeleteMsgRead,
+  DeleteSuccess,
+  DeleteFail,
 
 }) {
   const {user, token} = useContext(AuthContext);
@@ -75,9 +78,9 @@ function Home({
   const [dataUsed, setDataUsed] = useState(0)
   const [dataTotal, setDataTotal] = useState(0)
   const [subscribedTo, setSubscribedTo] = useState('')
+  const [final, setFinal] = useState('')
 
-
- 
+  const [leftData, setLeftData] = useState(0)
   const refRBSheet1 = useRef();
   // App.js
 
@@ -111,23 +114,16 @@ function Home({
 
 
   const getDataused = async () => {
-
-
-
     UsedData().then(response=>{
-
-      console.log('response++++++', response)
-
-
       if(response.data){
+        var letData = response.data && response.data.left_data ? response.data.left_data.split(' ')[0] : 0;
 
-        setDataUsedPercent(response.data.used_percent)
-        setDataUsed(response.data.used_data)
-        setDataTotal(response.data.total_data)
-        setSubscribedTo(response.data.subscribed_to)
+        setDataUsedPercent(response.data.used_percent);
+        setDataUsed(response.data.used_data);
+        setDataTotal(response.data.total_data);
+        setSubscribedTo(response.data.subscribed_to);
+        setLeftData(letData);
 
-        // setProfile(response.data)
-        //     console.log('profiledata', response.data.length);
       }
     })
 
@@ -168,6 +164,7 @@ function Home({
       Toast.show('Report Document Upload Succesfully', Toast.SHORT, [
         'UIAlertController',
       ]);
+      
       reportMsgRead();
     } else if (fileUploadFailMsg) {
       Toast.show(
@@ -197,39 +194,7 @@ function Home({
   //   return () =>
   //     BackHandler.removeEventListener('hardwareBackPress', () => true);
   // }, []);
-  const chooseFile = type => {
-    let options = {
-      mediaType: type,
-      maxWidth: 300,
-      maxHeight: 550,
-      quality: 1,
-    };
-    launchImageLibrary(options, response => {
-      console.log('Response = ', response);
 
-      if (response.didCancel) {
-        alert('User cancelled camera picker');
-        return;
-      } else if (response.errorCode == 'camera_unavailable') {
-        alert('Camera not available on device');
-        return;
-      } else if (response.errorCode == 'permission') {
-        alert('Permission not satisfied');
-        return;
-      } else if (response.errorCode == 'others') {
-        alert(response.errorMessage);
-        return;
-      }
-      console.log('base64 -> ', response.base64);
-      console.log('uri -> ', response.uri);
-      console.log('width -> ', response.width);
-      console.log('height -> ', response.height);
-      console.log('fileSize -> ', response.fileSize);
-      console.log('type -> ', response.type);
-      console.log('fileName -> ', response.fileName);
-      uploadReportFiles(response);
-    });
-  };
   useLayoutEffect(() => {
     if (recentReport.data) {
       // getProfile(user.phoneNumber);
@@ -237,9 +202,12 @@ function Home({
       // setProfileImage(getProfileData.imageURL)
     }
   }, [recentReport]);
+
+
   useFocusEffect(
     React.useCallback(() => {
       getRecentReport();
+      getDataused();
       if (recentReport.data) {
         // getProfile(user.phoneNumber);
         setName(recentReport.data);
@@ -248,11 +216,28 @@ function Home({
       ListUserAction().then(response=>{
         if(response.data){
           setProfile(response.data)
-              console.log('profiledata', response.data.length);
         }
       })
     }, [])
   );
+
+
+  useEffect(() => {
+    if (DeleteSuccess) {
+      getRecentReport();
+      Toast.show('Record has been deleted successfully', Toast.SHORT, [
+        'UIAlertController',
+      ]);
+    
+      reportDeleteMsgRead();
+    } else if (DeleteFail) {
+      Toast.show('Record cannot be deleted due to some error.Please try again', Toast.SHORT, [
+        'UIAlertController',
+      ]);
+      reportDeleteMsgRead();
+    }
+    return () => {};
+  });
 
   const ShareRecord = (item) => {
     console.log('slug++++++', item.slug);
@@ -387,7 +372,7 @@ function Home({
               alignItems: 'center',
               flexDirection: 'row', 
               backgroundColor:'#fff', 
-              // marginTop:'8%',
+              marginTop: Platform.OS === 'android' ? '8%' : 0,
               paddingBottom:20,
               borderBottomWidth: 1,
               borderBottomColor: '#D0D0D0',
@@ -448,6 +433,8 @@ function Home({
                 dataUsedPercent={dataUsedPercent} 
                 dataUsed={dataUsed} 
                 dataTotal={dataTotal}  
+                final={final}
+                leftData={leftData}
               />
           </View>
 
