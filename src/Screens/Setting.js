@@ -147,7 +147,7 @@ export default function Setting({navigation}) {
 
             <Text style={{color: '#5A6262', paddingLeft: 10, fontSize: moderateScale(14),fontFamily:fontFamily.Regular}} 
              onPress={() => navigation.navigate('OpenUrl', {
-              url: 'http://ec2-3-99-37-134.ca-central-1.compute.amazonaws.com/useraccount/faq/'
+              url: 'https://mdrxonline.com/useraccount/faq/'
             })}
             >
              Help Center
@@ -202,7 +202,7 @@ export default function Setting({navigation}) {
                 
               <Text style={{color: '#5A6262', paddingLeft: 10, fontSize:  moderateScale(14),fontFamily:fontFamily.Regular}}
               onPress={() => navigation.navigate('OpenUrl', {
-                url: 'http://ec2-3-99-37-134.ca-central-1.compute.amazonaws.com/terms-n-conditions/'
+                url: 'https://mdrxonline.com/terms-n-conditions/'
               })}
               >
                 Terms and Conditions
@@ -222,7 +222,7 @@ export default function Setting({navigation}) {
 
             <Text style={{color: '#5A6262', paddingLeft: 10, fontSize:  moderateScale(14),fontFamily:fontFamily.Regular}}
             onPress={() => navigation.navigate('OpenUrl', {
-              url: 'http://ec2-3-99-37-134.ca-central-1.compute.amazonaws.com/privacy-policy/'
+              url: 'https://mdrxonline.com/privacy-policy/'
             })}
             >
               Privacy Policy
@@ -256,7 +256,7 @@ export default function Setting({navigation}) {
 
             <TouchableOpacity
              onPress={() => navigation.navigate('OpenUrl', {
-              url: 'http://ec2-3-99-37-134.ca-central-1.compute.amazonaws.com/gdpr/'
+              url: 'https://mdrxonline.com/gdpr/'
             })}>
 
 

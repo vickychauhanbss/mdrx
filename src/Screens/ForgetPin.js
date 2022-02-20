@@ -181,7 +181,7 @@ const ForgetPin = ({navigation, route}) => {
                 alignSelf:'center',
                 alignContent:'center',
                 flexDirection: 'row',
-                elevation:4,
+                // elevation:4,
                 // opacity: enable ? 1 : 0.4
               }}>
                 {console.warn(route.params)}

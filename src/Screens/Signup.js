@@ -627,7 +627,7 @@ const ShowMaxAlert = (EnteredValue) =>{
                     colors={['#1E88B9', '#1E88B9', '#60cfdf']} 
                     style={styles.linearGradient}> */}
                     <Text style={styles.buttonText}>
-                    Next
+                    NEXT
                     </Text>
                   {/* </LinearGradient> */}
             {/* <Text style={{color: '#FFFFFF', fontFamily: fontFamily.Bold}}>
@@ -763,8 +763,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     margin: 14,
     color: '#ffffff',
-    backgroundColor: 'transparent',
-    color: 'white', 
+    // backgroundColor: 'transparent',
+    // color: 'white', 
     fontFamily:fontFamily.Regular,
     fontWeight:'600'
   },

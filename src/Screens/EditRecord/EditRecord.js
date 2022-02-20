@@ -104,6 +104,12 @@ export default function Home({
   const [submit, setSubmit] = useState(false);
 
 
+  const[filename1, setFileName1]=useState('')
+
+
+  
+
+
   const [ isVisiableEdit, setIsVisiableEdit] = useState(false)
 
 const toggleModal = () => {
@@ -142,43 +148,30 @@ const toggleModal = () => {
     return `${RNFS.DocumentDirectoryPath}/${filename}`;
   };
 
-  const downloadPdf = (report) => {
+  const downloadPdf = (report, name) => {
     refRBSheet1.current.close()
     console.log('report+++++', report)
 
-    navigation.navigate('OpenFileUrl', {'url' : report});
 
+    const checkPdf = name.split('.').pop()
+    if(checkPdf !== 'pdf' && checkPdf !== 'mp4'){
+      navigation.navigate('OpenFileUrl', {'url' : report});
 
-  //   if(record===undefined){
-  //    alert('record is just choosen by , it can not open ')
-  //   }
-  //   else{
-  //   if ( record) {
-  //     const url = record;
-  //     Linking.canOpenURL(record).then((supported) => {
-  //       if (supported) {
-  //         Linking.openURL(record);
-  //       }
-  //       else {
-  //         console.log(`Don't know how to open URI: ${url}`);
-  //         Toast.show('Download failed!', Toast.SHORT, ['UIAlertController']);
-  //       }
-  //     });
-  //   }
-  //   else {
-  //     const url = report;
-  //     // console.log(url);
-  //     Linking.canOpenURL(url).then((supported) => {
-  //       if (supported) {
-  //         Linking.openURL(url);
-  //       }
-  //       else {
-  //         console.log(`Don't know how to open URI: ${url}`);
-  //         Toast.show('Download failed!', Toast.SHORT, ['UIAlertController']);
-  //       }
-  //     });
-  //   }
-  // }
+    }else if (checkPdf == 'mp4'){
+
+      navigation.navigate('OpenVideoUrl', {'url' : report});
+
+    }
+    // else if(checkPdf == 'png'){
+
+    //   navigation.navigate('OpenPngUrl', {'url' : report});
+    // }
+    else{
+
+      navigation.navigate('OpenPdfFile', {'url' : report});
+
+    }
+
   };
 
 
@@ -194,6 +187,7 @@ const toggleModal = () => {
         }
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        requestExternalWritePermission()
         console.log("Camera permission given");
       } else {
         console.log("Camera permission denied");
@@ -202,6 +196,29 @@ const toggleModal = () => {
       console.warn(err);
     }
   };
+
+
+  const requestExternalWritePermission = async () => {
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+          {
+            title: 'External Storage Write Permission',
+            message: 'App needs write permission',
+          },
+        );
+        // If WRITE_EXTERNAL_STORAGE Permission is granted
+        return granted === PermissionsAndroid.RESULTS.GRANTED;
+      } catch (err) {
+        console.warn(err);
+        alert('Write permission err', err);
+      }
+      return false;
+    } else return true;
+  };
+
+  
 
   
 //   const downloadFile = () => {
@@ -282,7 +299,7 @@ const toggleModal = () => {
     imageRes.forEach((item, i) => {
       data.append('record_files', {
         uri: item.record_file ? item.record_file : item.uri,
-        type: item.type ? item.type:'image/jpeg',
+        type: item.type ? item.type: 'image/jpeg',
         name: item.fileName ? item.fileName  : item.name ,
       });
     });
@@ -429,8 +446,6 @@ const toggleModal = () => {
         console.log('User tapped custom button: ', res.customButton);
         alert(res.customButton);
       } else {
-        const source = {uri: res.uri};
-        console.log('response', JSON.stringify(res));
         // setfileName(res.fileName);
         // filename.push(res);
         // alert(res.fileName)
@@ -668,7 +683,8 @@ const Item = ({title, index}) => (
       /> */}
       <View
         style={{flex: 0.8, justifyContent: 'center', alignSelf: 'center', fontFamily:fontFamily.Regular, fontSize:14}}>
-       <Text onPress={()=> {setrecord(title.record_file); downloadPdf(title.record_file)}} numberOfLines={3} style={{fontSize: 14, fontFamily:fontFamily.Regular, color:'#000', left:6}}>{title.name === undefined? title.record_file.split("/").pop() ? title.record_file.split("/").pop() : title.fileName ? 'Scan_'+new Date().getTime()+'.'+title.type: title.fileName :title.name}</Text>
+       {/* <Text onPress={()=> {setrecord(title.record_file); downloadPdf(title.record_file)}} numberOfLines={3} style={{fontSize: 14, fontFamily:fontFamily.Regular, color:'#000', left:6}}>{title.name === undefined? title.record_file.split("/").pop() ? title.record_file.split("/").pop() : title.fileName ? 'Scan_'+new Date().getTime()+'.'+title.type: title.fileName :title.name}</Text> */}
+       <Text onPress={()=> {setrecord(title.record_file); downloadPdf(title.record_file, title.file_name)}} numberOfLines={3} style={{fontSize: 14, fontFamily:fontFamily.Regular, color:'#000', left:6}}>{title.file_name}</Text>
      
       </View>
       <View
@@ -684,7 +700,7 @@ const Item = ({title, index}) => (
         {/* <Text>Hiii</Text> */}
 
 
-        <TouchableOpacity onPress={()=> {refRBSheet1.current.open(title); SetId(title.id), setrecord(title.record_file) , setRename(title.file_name.split('.')[0])}}>
+        <TouchableOpacity onPress={()=> {refRBSheet1.current.open(title); SetId(title.id), setrecord(title.record_file) , setFileName1(title.file_name), setRename(title.file_name.split('.')[0])}}>
             <Image  source={require('../../Assets/dots.png')}  style={{height: scale(20), width: scale(20)}} />  
         </TouchableOpacity>
 
@@ -725,7 +741,7 @@ const SmallSheet=(item)=>{
     {/* <Icon name={'download'} size={25} color={'#0EA1D8'} /> */}
     <TouchableOpacity
       style={{paddingLeft: 10}}
-      onPress={() => downloadPdf(record)}>
+      onPress={() => downloadPdf(record, filename1)}>
       <Text style={{fontSize: moderateScale(16), fontFamily:fontFamily.Regular}}>Download</Text>
     </TouchableOpacity>
   </View>
@@ -1053,7 +1069,7 @@ const SmallSheet=(item)=>{
                   justifyContent: 'center',
                   alignItems: 'center',
                   flexDirection: 'row',
-                  elevation:4,
+                  // elevation:4,
                   marginTop:'10%',
                   backgroundColor:'#0EA1D8'
                 }}>
@@ -1321,8 +1337,8 @@ const styles = StyleSheet.create({
       textAlign: 'center',
       margin: 14,
       color: '#ffffff',
-      backgroundColor: 'transparent',
-      color: 'white', 
+      // backgroundColor: 'transparent',
+      // color: 'white', 
       fontFamily:fontFamily.Regular,
       fontWeight:'600'
     },

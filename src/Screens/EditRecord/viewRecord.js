@@ -47,16 +47,6 @@ import RNFS from 'react-native-fs';
 import {Card} from 'react-native-elements';
 import { APP_BASE_URL } from '../../Utils/apiConfig';
 
-
-import {
-  Menu,
-  MenuOptions,
-  MenuOption,
-  MenuTrigger,
-  MenuProvider,
-} from 'react-native-popup-menu';
-
-
 import Modal from "react-native-modal";
 export default function viewRecords({
   navigation,
@@ -73,10 +63,6 @@ export default function viewRecords({
   editFileMsgRead,
   
 }) {
-
-  console.log('editDetails+++++++++', editDetails)
-  console.log('route.params.slug+++++++++', route.params.slug)
-  console.log('editSuccess+++++++++', editSuccess)
 
   
   const {user, token, setCookies} = useContext(AuthContext);
@@ -102,6 +88,7 @@ export default function viewRecords({
   const[rename, setRename]=useState('')
 
 
+  const[filename1, setFileName1]=useState('')
   const [ isVisiableEdit, setIsVisiableEdit] = useState(false)
 
 const toggleModal = () => {
@@ -137,59 +124,26 @@ const toggleModal = () => {
   //   });
   // };
 
-  const getLocalPath = () => {
-    const filename = `prescription.pdf`;
-    return `${RNFS.DocumentDirectoryPath}/${filename}`;
-  };
+  
 
-  const downloadPdf = (report) => {
+  const downloadPdf = (report, name) => {
+    console.log('report++++++', report)
+    console.log('name++++++', name);
     refRBSheet1.current.close()
+    const checkPdf = name.split('.').pop()
 
-    console.log('report+++++', report.split('.').pop())
-
-    const checkPdf = report.split('.').pop()
-
-    if(checkPdf !== 'pdf'){
+    if(checkPdf !== 'pdf' && checkPdf !== 'mp4'){
       navigation.navigate('OpenFileUrl', {'url' : report});
 
-    }else{
+    }else if (checkPdf == 'mp4'){
+
+      navigation.navigate('OpenVideoUrl', {'url' : report});
+
+    } else{
 
       navigation.navigate('OpenPdfFile', {'url' : report});
 
     }
-
-
-
-  //   if(record===undefined){
-  //    alert('record is just choosen by , it can not open ')
-  //   }
-  //   else{
-  //   if ( record) {
-  //     const url = record;
-  //     Linking.canOpenURL(record).then((supported) => {
-  //       if (supported) {
-  //         Linking.openURL(record);
-  //       }
-  //       else {
-  //         console.log(`Don't know how to open URI: ${url}`);
-  //         Toast.show('Download failed!', Toast.SHORT, ['UIAlertController']);
-  //       }
-  //     });
-  //   }
-  //   else {
-  //     const url = report;
-  //     // console.log(url);
-  //     Linking.canOpenURL(url).then((supported) => {
-  //       if (supported) {
-  //         Linking.openURL(url);
-  //       }
-  //       else {
-  //         console.log(`Don't know how to open URI: ${url}`);
-  //         Toast.show('Download failed!', Toast.SHORT, ['UIAlertController']);
-  //       }
-  //     });
-  //   }
-  // }
   };
 
 
@@ -205,6 +159,7 @@ const toggleModal = () => {
         }
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        requestExternalWritePermission();
         console.log("Camera permission given");
       } else {
         console.log("Camera permission denied");
@@ -214,31 +169,30 @@ const toggleModal = () => {
     }
   };
 
-  
-  const downloadFile = () => {
-    refRBSheet1.current.close()
-    // console.warn('in')
-    // const localFile = getLocalPath();
-    const options = {
-      fromUrl: record,
-      // toFile: localFile,
-    };
-    // console.log('urlurl',options)
-    FileViewer.open('http://ec2-3-99-37-134.ca-central-1.compute.amazon…x/22d420dc2f5e4593af5a/JD1_2022-01-04-170556.docx')
-    .then(() => {
-      // Do whatever you want
-      console.log('Success');
-    })
-    .catch(_err => {
-      // Do whatever you want
-      console.log(_err);
-    });
-// }
+
+  const requestExternalWritePermission = async () => {
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+          {
+            title: 'External Storage Write Permission',
+            message: 'App needs write permission',
+          },
+        );
+        // If WRITE_EXTERNAL_STORAGE Permission is granted
+        return granted === PermissionsAndroid.RESULTS.GRANTED;
+      } catch (err) {
+        console.warn(err);
+        alert('Write permission err', err);
+      }
+      return false;
+    } else return true;
   };
+
   
-  const showDatePicker = () => {
-    setDatePickerVisibility(true);
-  };
+
+ 
 
   const hideDatePicker = () => {
     setDatePickerVisibility(false);
@@ -257,6 +211,8 @@ const toggleModal = () => {
   const controller = useRef(null);
 
   const uploadReportFiles = response => {
+
+    console.log('response+++++++', response)
    
       // RNGRP.getRealPathFromURI('http://ec2-52-60-152-239.ca-central-1.compute.amazonaws.com:8000''+filename).then(filePath =>
       //   console.log('anotherrrr',filePath)
@@ -311,9 +267,11 @@ const toggleModal = () => {
 
     const data = new FormData();
     imageRes.forEach((item, i) => {
+
+      console.log(' loop item+++++++++', item);
       data.append('record_files', {
         uri: item.record_file ? item.record_file : item.uri,
-        type: item.type ? item.type:'image/jpeg',
+        type: item.type ? item.type: 'image/jpeg',
         name: item.fileName ? item.fileName  : item.name ,
       });
     });
@@ -465,8 +423,6 @@ const toggleModal = () => {
         console.log('User tapped custom button: ', res.customButton);
         alert(res.customButton);
       } else {
-        const source = {uri: res.uri};
-        console.log('response', JSON.stringify(res));
         // setfileName(res.fileName);
         // filename.push(res);
         // alert(res.fileName)
@@ -706,7 +662,9 @@ const Item = ({title, index}) => (
 
       <View
         style={{flex: 0.8, justifyContent: 'center', alignSelf: 'center', fontFamily:fontFamily.Regular, fontSize:14}}>
-       <Text onPress={()=> {setrecord(title.record_file); downloadPdf(title.record_file)}} numberOfLines={3} style={{fontSize: 14, fontFamily:fontFamily.Regular, color:'#000', left:6}}>{title.name === undefined ? title.record_file.split("/").pop() ? title.record_file.split("/").pop() : title.fileName ? 'Scan_'+new Date().getTime()+'.'+title.type: title.fileName :title.name}</Text>
+       {/* <Text onPress={()=> {setrecord(title.record_file); downloadPdf(title.record_file)}} numberOfLines={3} style={{fontSize: 14, fontFamily:fontFamily.Regular, color:'#000', left:6}}>{title.name === undefined ? title.record_file.split("/").pop() ? title.record_file.split("/").pop() : title.fileName ? 'Scan_'+new Date().getTime()+'.'+title.type: title.fileName :title.name}</Text> */}
+
+       <Text onPress={()=> {setrecord(title.record_file); downloadPdf(title.record_file, title.file_name)}} numberOfLines={3} style={{fontSize: 14, fontFamily:fontFamily.Regular, color:'#000', left:6}}>{title.file_name}</Text>
      
       </View>
       <View
@@ -722,7 +680,7 @@ const Item = ({title, index}) => (
         {/* <Text>Hiii</Text> */}
 
 
-        <TouchableOpacity onPress={()=> {refRBSheet1.current.open(title); SetId(title.id), setrecord(title.record_file) , setRename(title.file_name.split('.')[0])}}>
+        <TouchableOpacity onPress={()=> {refRBSheet1.current.open(title); SetId(title.id), setFileName1(title.file_name), setrecord(title.record_file) , setRename(title.file_name.split('.')[0])}}>
             <Image  source={require('../../Assets/dots.png')}  style={{height: scale(20), width: scale(20)}} />  
         </TouchableOpacity>
 
@@ -763,7 +721,7 @@ const SmallSheet=(item)=>{
     {/* <Icon name={'download'} size={25} color={'#0EA1D8'} /> */}
     <TouchableOpacity
       style={{paddingLeft: 10}}
-      onPress={() => downloadPdf(record)}>
+      onPress={() => downloadPdf(record, filename1)}>
       <Text style={{fontSize: moderateScale(16), fontFamily:fontFamily.Regular}}>Download</Text>
     </TouchableOpacity>
   </View>
@@ -1001,7 +959,7 @@ const SmallSheet=(item)=>{
                   justifyContent: 'center',
                   alignItems: 'center',
                   flexDirection: 'row',
-                  elevation:4,
+                  // elevation:4,
                   marginTop:'10%',
                   backgroundColor:'#0EA1D8'
                 }}>
@@ -1279,8 +1237,8 @@ const styles = StyleSheet.create({
       textAlign: 'center',
       margin: 14,
       color: '#ffffff',
-      backgroundColor: 'transparent',
-      color: 'white', 
+      // backgroundColor: 'transparent',
+      // color: 'white', 
       fontFamily:fontFamily.Regular,
       fontWeight:'600'
     },

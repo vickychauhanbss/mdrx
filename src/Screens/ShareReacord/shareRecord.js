@@ -458,8 +458,8 @@ import React, {
       textAlign: 'center',
       margin: 14,
       color: '#ffffff',
-      backgroundColor: 'transparent',
-      color: 'white', 
+      // backgroundColor: 'transparent',
+      // color: 'white', 
       fontFamily:fontFamily.Regular,
       fontWeight:'600'
     },

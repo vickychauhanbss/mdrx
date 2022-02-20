@@ -70,6 +70,9 @@ function RecordDetail({
   const [filteredDataSource, setFilteredDataSource] = useState([]);
   const [checkBoxIndex, setCheckBoxIndex] = useState('');
 
+
+  const [records, setRecords] = useState([]);
+
   
   //   useEffect () => {
   //       getAllReport()
@@ -95,27 +98,51 @@ function RecordDetail({
 
 
   const searchFilterFunction = (text) => {
+    console.log('text+++++++', text)
     // Check if searched text is not blank
     if (text) {
+
+      console.log('-------------- working -------------', name);
       // Inserted text is not blank
       // Filter the masterDataSource
       // Update FilteredDataSource
-      const newData = name.filter(
+      const newData = records.filter(
         function (item) {
-          const itemData = item.record_name
-            ? item.record_name.toUpperCase()
-            : ''.toUpperCase();
+          // console.log('item+++++++', item)
+          // const itemData = item.record_name
+          //   ? item.record_name.toUpperCase() : item.record_type_name.toUpperCase();
           const textData = text.toUpperCase();
-          return itemData.indexOf(textData) > -1;
+
+          console.log('textData++++++', textData)
+          console.log('record_name++++++', item.record_name.toUpperCase())
+          console.log('record_type_name++++++', item.record_type_name.toUpperCase())
+
+
+
+
+          return (
+            item.record_name.toUpperCase().indexOf(textData) >= 0 ||
+            item.record_type_name.toUpperCase().indexOf(textData) >= 0
+          )
+
+
+          // return itemData.indexOf(textData) > -1;
       });
+
+
+      console.log('newData++++++', newData);
       setFilteredDataSource(newData);
       console.warn('SearchData',newData)
       setSearch(text);
+
+      setName(newData)
     } else {
       // Inserted text is blank
       // Update FilteredDataSource with masterDataSource
       setFilteredDataSource(name);
       setSearch(text);
+      setName(records)
+
     }
   };
   useEffect(() => {
@@ -125,6 +152,7 @@ function RecordDetail({
   useEffect(() => {
     if (getReportSuccess) {
       setName(fileGetSuccess);
+      setRecords(fileGetSuccess)
       console.warn('fileGetSuccess', fileGetSuccess);
       // Toast.show('Report Fetched Succesfully', Toast.SHORT, [
       //   'UIAlertController',

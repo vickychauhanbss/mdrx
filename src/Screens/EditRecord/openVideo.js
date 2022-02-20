@@ -1,72 +1,39 @@
 import React, {Component, useContext, useRef, useState} from 'react';
 import {
   Dimensions,
-  ImageBackground,
   Text,
   View,
   Image,
-  TextInput,
-  ScrollView,
   TouchableOpacity,
-  Button,
   StyleSheet,
-  ActivityIndicator,
-  SafeAreaView,
-  Platform
+  Platform,
+  SafeAreaView
 } from 'react-native';
-import Styles from '../../Components/Styles';
 import {AuthContext} from '../../Utils/AuthContext';
-import {resetStore} from '../../redux/resetStore/resetAction';
-import {useDispatch} from 'react-redux';
 const {height, width} = Dimensions.get('window');
 import { fontFamily } from '../../Utils/fonts';
 
 import { moderateScale, scale } from 'react-native-size-matters';
-import Pdf from 'react-native-pdf';
+import Video from 'react-native-video'
 
-export default function OpenPdfFile({navigation, route}) {
+
+export default function OpenVideoUrl({navigation, route}) {
 
   console.log('route++++++', route);
 
   const { url } = route.params
 
-  console.log('url+++++', url)
+  console.log('url++++++', url);
 
-  const [visible, setVisible] = useState(false);
-
+  const videoPlayer = useRef(null);
 
   const {user, token, cookies} = useContext(AuthContext);
-  const {setToken} = useContext(AuthContext);
-  const {setLogout} = useContext(AuthContext);
-  const refRBSheet = useRef();
-  const [filePath, setFilePath] = useState({});
-  const dispatch = useDispatch();
-
-  const [KeyPairId, setKeyPairId] = useState(cookies.CloudFront_Key_Pair_Id);
-  const [Signature, setSignature] = useState(cookies.CloudFront_Signature);
-  const [Policy, setPolicy] = useState(cookies.CloudFront_Policy);
-
-
-  const ActivityIndicatorElement = () => {
-    //making a view to show to while loading the webpage
-    
-    return (
-        <View style={styles.activityIndicatorStyle}>
-            <ActivityIndicator
-                color="red"
-                size="large"
-            />
-        </View>
-    );
- };
 
 
 
   {
     return (
       <SafeAreaView style={{flex:1, backgroundColor:'#FFFFFF'}}>
-
-       
         <View  style={{
             width: width,
             height: height * 0.06,
@@ -77,7 +44,7 @@ export default function OpenPdfFile({navigation, route}) {
             marginTop: Platform.OS === 'android' ? '8%' : 0,
 
             // marginTop:'8%',
-            // paddingBottom:20,
+            paddingBottom:20,
             borderBottomWidth: 1,
             borderBottomColor: '#D0D0D0',
           }}>
@@ -115,34 +82,22 @@ export default function OpenPdfFile({navigation, route}) {
               }}>
             </View>
         </View>
+        <View style={styles.container}>
+
+            <Video
+              source={{ uri: url }}
+              onFullScreen={true}
+              controls={true}
+              ref={videoPlayer} 
+              resizeMode={'cover'}
+              style={{ position: 'absolute', top: 0,left: 0,bottom: 0,right: 0, }}
+
+              // style={styles.backgroundVideo}
+            /> 
+
+        </View>
 
 
-        {/* <ScrollView  > */}
-                <ScrollView style={styles.container}>
-
-                <Pdf
-                    source={{uri: url,  
-                    //   headers: {
-                    //   Cookie: `CloudFront-Key-Pair-Id=${KeyPairId}; CloudFront-Signature=${Signature}; CloudFront-Policy=${Policy}`
-                    // }  
-                  }}
-                    onLoadComplete={(numberOfPages,filePath) => {
-                        console.log(`Number of pages: ${numberOfPages}`);
-                    }}
-                    onPageChanged={(page,numberOfPages) => {
-                        console.log(`Current page: ${page}`);
-                    }}
-                    onError={(error) => {
-                        console.log(error);
-                    }}
-                    onPressLink={(uri) => {
-                        console.log(`Link pressed: ${uri}`);
-                    }}
-
-                    style={styles.pdf}
-                    />
-
-                </ScrollView>
         </SafeAreaView>
     );
   }
@@ -172,9 +127,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    // justifyContent: 'flex-start',
-    // alignItems: 'center',
-    // marginTop: 25,
+    backgroundColor: '#fffff',
   },
 
   activityIndicatorStyle: {
@@ -192,10 +145,28 @@ const styles = StyleSheet.create({
   },
 
 
-  pdf: {
-    flex:1,
-    width: Dimensions.get('window').width,
-    height: 600,
-}
+
+  activityInd: {
+    flex: 1,
+    position: 'absolute',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginTop: 'auto',
+    marginBottom: 'auto',
+    left: 0,
+    right: 0,
+    top: 50,
+    bottom: 0,
+    justifyContent: 'center',
+  },
+
+
+  backgroundVideo: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+  },
 });
 

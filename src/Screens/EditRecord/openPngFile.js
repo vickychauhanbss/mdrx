@@ -25,9 +25,10 @@ import { fontFamily } from '../../Utils/fonts';
 import { moderateScale, scale } from 'react-native-size-matters';
 import { WebView } from 'react-native-webview';
 import RNFetchBlob from 'rn-fetch-blob';
+import Video from 'react-native-video'
 
 
-export default function OpenFileUrl({navigation, route}) {
+export default function OpenPngUrl({navigation, route}) {
 
   console.log('route++++++', route);
 
@@ -40,6 +41,7 @@ export default function OpenFileUrl({navigation, route}) {
   const [visible, setVisible] = useState(false);
   const [fileExt, setFileExt] = useState((url.split('.').pop()).split('?')[0]);
 
+  const videoPlayer = useRef(null);
 
   const {user, token, cookies} = useContext(AuthContext);
   const {setToken} = useContext(AuthContext);
@@ -141,7 +143,6 @@ const checkPermission = async () => {
       },
     };
 
-    navigation.goBack(null)
 
    
     config(options)
@@ -210,35 +211,7 @@ const checkPermission = async () => {
         </View>
 
 
-        {
-          fileExt == 'png' || fileExt == 'jpg' || fileExt == 'jpeg' || fileExt == 'gif' || fileExt == 'pdf'  || fileExt == 'dcm'
-          ?
-          <ScrollView contentContainerStyle={{ flexGrow: 1 }} style={{backgroundColor:'#fff'}}>
-              <View style={styles.container}>
-                  <WebView
-                  style={{flex: 1, marginTop: 0}}
-                  //Loading URL
-                  source={{
-                      uri: url,                     
-                    }} 
-                  
-                  onLoadStart={() => setVisible(true)}
-                  onLoad={() => setVisible(false)}
-                  />
-                  {visible ? <ActivityIndicatorElement /> : null}
-              </View>
-          </ScrollView>
-          : 
-          <View>
-            <Text style={{textAlign:'center', alignContent:'center', alignItems:'center', alignSelf:'center', marginTop:'50%', fontFamily: fontFamily.Regular}}>Preview of this file is not available</Text>
-            <View style={{textAlign:'center', alignContent:'center', alignItems:'center', alignSelf:'center', flexDirection:'row'}}>
-              <TouchableOpacity onPress={checkPermission}><Text style={{color:'#3598f7', fontFamily: fontFamily.Bold}}>Click here</Text></TouchableOpacity>
-              <Text style={{fontFamily: fontFamily.Regular}}> to download it</Text>
-              {/* {visible ? <Activity /> : null} */}
-            </View>
-          </View>
-        }
-
+        <Image source={{ url : url}}  style={{height: '50%', width: '100%', flex:1 }} resizeMode={'contain'} />
 
         </SafeAreaView>
     );

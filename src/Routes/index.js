@@ -38,6 +38,8 @@ import PlanSelectorScreen from '../Screens/plans/PlanSelectorScreen';
 import CardDetails  from '../Screens/plans/CardDetails';
 import OpenFileUrl from '../Screens/EditRecord/openFile';
 import OpenPdfFile from '../Screens/EditRecord/openPdf';
+import OpenVideoUrl from '../Screens/EditRecord/openVideo';
+import OpenPngUrl from '../Screens/EditRecord/openPngFile';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -130,9 +132,20 @@ const homeNavigator = () => (
     />
 
 
+  <HomeStack.Screen
+      options={{headerShown: false}}
+      name='OpenVideoUrl'
+      route='OpenVideoUrl'
+      component={OpenVideoUrl}
+    />
 
 
-
+  <HomeStack.Screen
+      options={{headerShown: false}}
+      name='OpenPngUrl'
+      route='OpenPngUrl'
+      component={OpenPngUrl}
+    />
 
 
     <HomeStack.Screen

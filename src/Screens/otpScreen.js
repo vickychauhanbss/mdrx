@@ -253,7 +253,7 @@ const handleResend = () => {
               justifyContent: 'center',
               alignItems: 'center',
               flexDirection: 'row',
-              elevation:4,
+              // elevation:4,
               // marginTop:2,
             }}>
               {/* <LinearGradient  
@@ -361,8 +361,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     margin: 14,
     color: '#ffffff',
-    backgroundColor: 'transparent',
-    color: 'white', 
+    // backgroundColor: 'transparent',
+    // color: 'white', 
     fontFamily:fontFamily.Regular,
     fontWeight:'600'
   },

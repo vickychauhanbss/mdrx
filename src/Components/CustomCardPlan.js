@@ -10,37 +10,18 @@ const CustomCardPlan = ({ dataUsed, dataTotal, dataUsedPercent, subscribedTo, ch
 
     return (
         // <Card containerStyle={styles.container}>
-            <View style={{width:'100%', marginHorizontal:20, marginTop:'5%'}}>
+        <View style={{width:'100%', marginHorizontal:20, marginTop:'5%'}}>
                 
             <TouchableOpacity
                 style={styles.upgradeButton}
                 onPress={() => changeScreen('PlanSelectorScreen', {
                     'subscribedTo': subscribedTo
-                })}
-            >
+                })}>
                 <Text style={{fontWeight: 'bold', fontSize: 12, color:'#fff'}}>Upgrade</Text>
             </TouchableOpacity>
 
-
-            <Text style={styles.message}>{'You have '} {leftData} {'MB left in your current plan.'}</Text>
-
-
-
-                {/* <Icon style={styles.icon} name="icloud" size={30} color="#4F8EF7" /> */}
-                {/* <Progress.Bar style={styles.progress} color={parseFloat(dataUsedPercent) >= 0.9 ? 'red' : 'blue'} progress={dataUsedPercent} width={300} /> */}
-                {/* <Text style={styles.message}>{dataUsed} of {dataTotal} used</Text> */}
-                {/* {
-                    parseFloat(dataUsedPercent) >= 0.9 && 
-                        <TouchableOpacity
-                            style={styles.upgradeButton}
-                            onPress={() => changeScreen('PlanSelectorScreen', {
-                                'subscribedTo': subscribedTo
-                            })}
-                        >
-                            <Text style={{fontWeight: 'bold', color:'#fff'}}>Upgrade</Text>
-                        </TouchableOpacity>
-                } */}
-            </View>
+            <Text style={styles.message}>{'You have '} <Text style={{textTransform: 'capitalize'}}>{leftData}</Text> {'left in your current plan.'}</Text>
+        </View>
     )
 }
 
@@ -58,7 +39,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontFamily:fontFamily.Regular ,
         marginTop: 8,
-        width:'60%'
+        width:'60%',
     },
     upgradeButton: {
         // alignItems: "center",

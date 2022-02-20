@@ -25,32 +25,21 @@ import {
   PermissionsAndroid,
   SafeAreaView
 } from 'react-native';
-import Styles from '../Components/Styles';
 import {AuthContext} from '../Utils/AuthContext';
 const {height, width} = Dimensions.get('window');
 import RBSheet from 'react-native-raw-bottom-sheet';
-import Icon1 from 'react-native-vector-icons/FontAwesome5';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import AntIcon from 'react-native-vector-icons/AntDesign';
 import Ionic from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-simple-toast';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import DropDownPicker from 'react-native-dropdown-picker';
-import { Dropdown } from 'react-native-material-dropdown';
-import Material from 'react-native-vector-icons/MaterialIcons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {typeAction} from '../Service/RecordType';
 import { fontFamily } from '../Utils/fonts';
 import DocumentPicker from 'react-native-document-picker';
-import { Card } from 'react-native-elements';
-// import LinearGradient from 'react-native-linear-gradient';
 import { moderateScale, scale } from 'react-native-size-matters';
 
-import {Picker} from '@react-native-picker/picker';
 import Modal from "react-native-modal";
-import SelectDropdown from 'react-native-select-dropdown';
 import RNPickerSelect from 'react-native-picker-select';
 
 const countries = ["Egypt", "Canada", "Australia", "Ireland", "Egypt", "Canada", "Australia", "Ireland"]
@@ -62,13 +51,6 @@ export default function Home({
   fileUploadSuccess,
   fileUploadFailMsg,
   reportMsgRead,
-  route,
-  EditReport,
-  editmessage,
-  editDetails,
-  editSuccess,
-  editFail,
-  editFileMsgRead,
 }) {
   const {user, token} = useContext(AuthContext);
   const refRBSheet = useRef();
@@ -87,29 +69,9 @@ export default function Home({
   const [typeVal, setTypeVal] = useState(false)
   const [nameVal, setNameVal] = useState(false)
   const [submit, setSubmit] = useState(false);
-
-
-
-  
-
-
   const[selectType, setSelectType] = useState('')
-
-
-  
-
   const [selectedValue, setSelectedValue] = useState("java");
-
   const [isModalVisible, setModalVisible] = useState(false);
-
-
-
-  // const [open, setOpen] = useState(false);
-  // const [value, setValue] = useState('apple');
-  // const [items, setItems] = useState([
-  //   {label: 'Apple', value: 'apple'},
-  //   {label: 'Banana', value: 'banana'}
-  // ]);
 
 
   useEffect(() => {
@@ -171,6 +133,7 @@ const requestCameraPermission = async () => {
       }
     );
     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      requestExternalWritePermission()
       console.log("Camera permission given");
     } else {
       console.log("Camera permission denied");
@@ -180,9 +143,32 @@ const requestCameraPermission = async () => {
   }
 };
 
+
+const requestExternalWritePermission = async () => {
+  if (Platform.OS === 'android') {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        {
+          title: 'External Storage Write Permission',
+          message: 'App needs write permission',
+        },
+      );
+      // If WRITE_EXTERNAL_STORAGE Permission is granted
+      return granted === PermissionsAndroid.RESULTS.GRANTED;
+    } catch (err) {
+      console.warn(err);
+      alert('Write permission err', err);
+    }
+    return false;
+  } else return true;
+};
+
   const controller = useRef(null);
 
   const uploadReportFiles = response => {
+
+    console.log('response++++++++++', response);
     setSubmit(true)
     
     if (selectType == '' || selectType == null) {
@@ -196,23 +182,39 @@ const requestCameraPermission = async () => {
 
     var dateNew = moment(date, 'Do MMM, YYYY')
     const data = new FormData();
+
     filename.forEach((item, i) => {
       data.append('record_files', {
         uri: item.uri,
         type:item.type ? item.type : 'image/jpeg',
-        name: item.filename || `filename${i}.jpg`,
+        name: item.fileName ? item.fileName  : item.name ,
       });
     });
+
+
+    // name, fileName, fileName
+
+    // filename.forEach((item, i) => {
+
+    //   // data.append('record_files', {
+    //   //   uri: item.record_file ? item.record_file : item.uri,
+    //   //   type: item.type ? item.type: 'image/jpeg',
+    //   //   name: item.fileName ? item.fileName  : item.name ,
+    //   // });
+
+    //   data.append('record_files', {
+    //     uri: item.uri,
+    //     type: item.type ? item.type : 'image/jpeg',
+    //     name: item.filename ?  item.filename : item.fileName,
+    //   });
+    // });
     // data.append('record_files', source);
     data.append('record_name', name);
     data.append('date_record', dateNew.format('YYYY-MM-DD'));
     data.append('user_record_type', selectType);
     data.append('user_comment', note)
-    // uploadReport(user.phoneNumber, data, onUploadProgress);
     uploadReport(data);
-    // }
-
-    // }
+    
   };
   
   useEffect(() => {
@@ -260,9 +262,10 @@ const requestCameraPermission = async () => {
         path: 'images',
       },
     };
-    launchCamera(options, res => {
+
+    
+    launchCamera(options, (res) => {
       console.log('Response = ', res);
-      console.warn(options)
       if (res.didCancel) {
         console.log('User cancelled image picker');
       } else if (res.error) {
@@ -272,8 +275,10 @@ const requestCameraPermission = async () => {
         alert(res.customButton);
        
       } else {
-        const source = {uri: res.uri};
-        console.log('response', JSON.stringify(res));
+
+
+
+        alert(JSON.stringify(res))
 
         if (res.type){
           addfile1('Scan_'+new Date().getTime().toString() + '.'+res.type)
@@ -296,6 +301,7 @@ const requestCameraPermission = async () => {
   const addfile1 = res => {
     setPic(pic => [ ...pic, res]);
   };
+
   const chooseFile = type => {
     let options = {
       mediaType: type,
@@ -319,14 +325,23 @@ const requestCameraPermission = async () => {
         alert(response.errorMessage);
         return;
       }
+
+
+      alert(JSON.stringify(response))
+
+
+
+      console.log('chooseFile ++++++++++', response)
+
       // alert(JSON.stringify(response))
       if (response.type){
         addfile1('Scan_'+new Date().getTime().toString() + '.'+response.type)
         filename.push(response);
-      }
-      else if (response.assets){
+
+      } else if (response.assets){
         addfile1('Scan_'+new Date().getTime().toString() + '.'+response.assets[0].type)
         filename.push(response.assets[0]);
+
       }
       // filename.push(response);
       // pic.push(response.fileName);
@@ -358,6 +373,12 @@ const requestCameraPermission = async () => {
         console.log('File Name : ' + res.name);
         console.log('File Size : ' + res.size);
         // alert(JSON.stringify(res.name))
+
+      console.log('selectMultipleFile ++++++++++', res)
+
+      alert(JSON.stringify(res))
+
+
         if(res.type){
           filename.push(res);
           addfile1(res.name)
@@ -782,9 +803,7 @@ const requestCameraPermission = async () => {
               />
             </View>
 
-            <TouchableOpacity  
-             onPress={() => uploadReportFiles(imageRes)} style={{ alignItems: 'center',
-             justifyContent: 'center'}}>
+            <TouchableOpacity onPress={() => uploadReportFiles(imageRes)} style={{ alignItems: 'center',justifyContent: 'center'}}>
               <View
                 style={{
                   // padding:30,
@@ -793,7 +812,7 @@ const requestCameraPermission = async () => {
                   justifyContent: 'center',
                   alignItems: 'center',
                   flexDirection: 'row',
-                  elevation:4,
+                  // elevation:4,
                   marginTop:'10%',
                   backgroundColor:'#0EA1D8'
 
@@ -996,8 +1015,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         margin: 14,
         color: '#ffffff',
-        backgroundColor: 'transparent',
-        color: 'white', 
+        // backgroundColor: 'transparent',
         fontFamily:fontFamily.Regular,
         fontWeight:'600'
       },

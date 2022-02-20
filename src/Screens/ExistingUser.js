@@ -221,14 +221,14 @@ const ExistingUser = ({navigation, props}) => {
           {/* <TouchableOpacity  > */}
               <TouchableOpacity
                 style={{
-                  height: width * 0.13,
+                  // height: width * 0.13,
                   width: width -100,
                   // backgroundColor: '#0EA1D8',
                   borderRadius: 10,
                   justifyContent: 'center',
                   alignItems: 'center',
                   flexDirection: 'row',
-                  elevation:4,
+                  // elevation:4,
                   marginTop:10,
                   backgroundColor:'#0EA1D8'
                 }} onPress={() =>loginCheck()}>
@@ -358,10 +358,11 @@ const styles = StyleSheet.create({
     fontSize: moderateScale(16),
     // fontFamily: 'Gill Sans',
     textAlign: 'center',
-    margin: 15,
+    // margin: 10,
+    margin: 14,
     color: '#ffffff',
-    backgroundColor: 'transparent',
-    color: 'white', 
+    // backgroundColor: 'transparent',
+    // color: 'white', 
     fontFamily:fontFamily.Regular,
     fontWeight:'600'
   },

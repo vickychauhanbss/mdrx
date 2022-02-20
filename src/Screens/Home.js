@@ -116,13 +116,13 @@ function Home({
   const getDataused = async () => {
     UsedData().then(response=>{
       if(response.data){
-        var letData = response.data && response.data.left_data ? response.data.left_data.split(' ')[0] : 0;
+        // var letData = response.data && response.data.left_data ? response.data.left_data.split(' ')[0] : 0;
 
         setDataUsedPercent(response.data.used_percent);
         setDataUsed(response.data.used_data);
         setDataTotal(response.data.total_data);
         setSubscribedTo(response.data.subscribed_to);
-        setLeftData(letData);
+        setLeftData(response.data.left_data);
 
       }
     })
@@ -424,7 +424,7 @@ function Home({
         </View>
         <ScrollView  style={{flex: 1}}>
 
-          <View>
+          {/* <View> */}
             {/* <Text></Text> */}
 
               <CustomCardPlan 
@@ -436,7 +436,7 @@ function Home({
                 final={final}
                 leftData={leftData}
               />
-          </View>
+          {/* </View> */}
 
 
 

@@ -330,7 +330,7 @@ const  ChangePin=({navigation, route})=> {
                   justifyContent: 'center',
                   alignItems: 'center',
                   flexDirection: 'row',
-                  elevation:4,
+                  // elevation:4,
                   marginTop:'10%',
                   backgroundColor:'#0EA1D8'
                 }}>
@@ -435,8 +435,8 @@ const  ChangePin=({navigation, route})=> {
       textAlign: 'center',
       margin: 14,
       color: '#ffffff',
-      backgroundColor: 'transparent',
-      color: 'white', 
+      // backgroundColor: 'transparent',
+      // color: 'white', 
       fontFamily:fontFamily.Bold,
       fontWeight:'600'
     },

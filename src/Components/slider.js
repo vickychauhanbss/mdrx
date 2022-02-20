@@ -29,6 +29,7 @@ export default class Slider extends Component {
           width='100%'
           images={this.state.images}
           sliderBoxHeight={220}
+
           onCurrentImagePressed={index => console.warn(`image ${index} pressed`)}
           dotColor="#0EA1D8"
           inactiveDotColor="#90A4AE"
@@ -55,10 +56,10 @@ export default class Slider extends Component {
             marginHorizontal: 0,
             padding: 0,
             margin: 0,
-            // bottom:-20,
+            bottom:5,
             backgroundColor: "rgba(128, 128, 128, 0.92)"
           }}
-          ImageComponentStyle={{ width: '100%', marginTop: 5}}
+          ImageComponentStyle={{ width: '100%', marginTop: '-4%'}}
           imageLoadingColor="#2196F3"
         />
       </View>
