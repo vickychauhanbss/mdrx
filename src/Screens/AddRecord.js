@@ -43,6 +43,8 @@ import Modal from "react-native-modal";
 import RNPickerSelect from 'react-native-picker-select';
 
 const countries = ["Egypt", "Canada", "Australia", "Ireland", "Egypt", "Canada", "Australia", "Ireland"]
+
+
 const currentData = new Date()
 
 export default function Home({
@@ -74,9 +76,6 @@ export default function Home({
   const [isModalVisible, setModalVisible] = useState(false);
 
 
-  useEffect(() => {
-    requestCameraPermission();
-  }, []);
 
 
   const showDatePicker = () => {
@@ -122,27 +121,23 @@ export default function Home({
 
 
 const requestCameraPermission = async () => {
-  try {
-    const granted = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.CAMERA,
-      {
-        title: "App Camera Permission",
-        message:"App needs access to your camera ",
-        buttonNegative: "Cancel",
-        buttonPositive: "OK"
-      }
-    );
-    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-      requestExternalWritePermission()
-      console.log("Camera permission given");
-    } else {
-      console.log("Camera permission denied");
+  if (Platform.OS === 'android') {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title: 'Camera Permission',
+          message: 'App needs camera permission',
+        },
+      );
+      // If CAMERA Permission is granted
+      return granted === PermissionsAndroid.RESULTS.GRANTED;
+    } catch (err) {
+      console.warn(err);
+      return false;
     }
-  } catch (err) {
-    console.warn(err);
-  }
+  } else return true;
 };
-
 
 const requestExternalWritePermission = async () => {
   if (Platform.OS === 'android') {
@@ -184,35 +179,18 @@ const requestExternalWritePermission = async () => {
     const data = new FormData();
 
     filename.forEach((item, i) => {
-      data.append('record_files', {
-        uri: item.uri,
-        type:item.type ? item.type : 'image/jpeg',
-        name: item.fileName ? item.fileName  : item.name ,
-      });
+      let localUri = item.uri;
+      let filename = localUri.split('/').pop();
+      let match = /\.(\w+)$/.exec(filename);
+      let type = match ? `image/${match[1]}` : `image`;
+      data.append('record_files', { uri: localUri, name: filename, type })
     });
-
-
-    // name, fileName, fileName
-
-    // filename.forEach((item, i) => {
-
-    //   // data.append('record_files', {
-    //   //   uri: item.record_file ? item.record_file : item.uri,
-    //   //   type: item.type ? item.type: 'image/jpeg',
-    //   //   name: item.fileName ? item.fileName  : item.name ,
-    //   // });
-
-    //   data.append('record_files', {
-    //     uri: item.uri,
-    //     type: item.type ? item.type : 'image/jpeg',
-    //     name: item.filename ?  item.filename : item.fileName,
-    //   });
-    // });
-    // data.append('record_files', source);
     data.append('record_name', name);
     data.append('date_record', dateNew.format('YYYY-MM-DD'));
     data.append('user_record_type', selectType);
     data.append('user_comment', note)
+
+    console.log('data++++++',data)
     uploadReport(data);
     
   };
@@ -254,64 +232,63 @@ const requestExternalWritePermission = async () => {
     filename.splice(i);
     
   }
-  const cameraLaunch = () => {
 
+
+  const cameraLaunch = async (type) => {
     let options = {
-      storageOptions: {
-        skipBackup: true,
-        path: 'images',
-      },
+      mediaType: type,
+      maxWidth: 300,
+      maxHeight: 550,
+      quality: 1,
+      videoQuality: 'low',
+      durationLimit: 30, //Video max duration in seconds
+      saveToPhotos: true,
     };
+    let isCameraPermitted = await requestCameraPermission();
+    let isStoragePermitted = await requestExternalWritePermission();
+    if (isCameraPermitted && isStoragePermitted) {
+      launchCamera(options, (response) => {
+        console.log('Response = ', response);
 
-    
-    launchCamera(options, (res) => {
-      console.log('Response = ', res);
-      if (res.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (res.error) {
-        console.log('ImagePicker Error: ', res.error);
-      } else if (res.customButton) {
-        console.log('User tapped custom button: ', res.customButton);
-        alert(res.customButton);
-       
-      } else {
-
-
-
-        alert(JSON.stringify(res))
-
-        if (res.type){
-          addfile1('Scan_'+new Date().getTime().toString() + '.'+res.type)
-          filename.push(res);
+        if (response.didCancel) {
+          alert('User cancelled camera picker');
+          return;
+        } else if (response.errorCode == 'camera_unavailable') {
+          alert('Camera not available on device');
+          return;
+        } else if (response.errorCode == 'permission') {
+          alert('Permission not satisfied');
+          return;
+        } else if (response.errorCode == 'others') {
+          alert(response.errorMessage);
+          return;
         }
-        else if (res.assets){
-          addfile1('Scan_'+new Date().getTime().toString() + '.'+res.assets[0].type)
-          filename.push(res.assets[0]);
-        }
-        // pic.push('Scan_'+new Date().getTime().toString() + '.'+res.type);
-        // filename.push(res);
-        // alert(res.fileName)
-        // uploadReportFiles(res);
-        // setimageRes(res);
+        console.log('base64 -> ', response.base64);
+        console.log('uri -> ', response.uri);
+        console.log('width -> ', response.width);
+        console.log('height -> ', response.height);
+        console.log('fileSize -> ', response.fileSize);
+        console.log('type -> ', response.type);
+        console.log('fileName -> ', response.fileName);
+        // setFilePath(response.assets[0]);
+
+        addfile1('Scan_'+new Date().getTime().toString() + '.'+response.assets[0].type)
+        filename.push(response.assets[0]);
         refRBSheet.current.close();
-      }
-    });
-  };
-  // setPic(pic => [...pic, res]);
-  const addfile1 = res => {
-    setPic(pic => [ ...pic, res]);
+      });
+    }
   };
 
-  const chooseFile = type => {
+  const chooseFile = (type) => {
     let options = {
       mediaType: type,
       maxWidth: 300,
       maxHeight: 550,
       quality: 1,
     };
-    launchImageLibrary(options, response => {
+    launchImageLibrary(options, (response) => {
       console.log('Response = ', response);
-    
+
       if (response.didCancel) {
         alert('User cancelled camera picker');
         return;
@@ -325,27 +302,6 @@ const requestExternalWritePermission = async () => {
         alert(response.errorMessage);
         return;
       }
-
-
-      alert(JSON.stringify(response))
-
-
-
-      console.log('chooseFile ++++++++++', response)
-
-      // alert(JSON.stringify(response))
-      if (response.type){
-        addfile1('Scan_'+new Date().getTime().toString() + '.'+response.type)
-        filename.push(response);
-
-      } else if (response.assets){
-        addfile1('Scan_'+new Date().getTime().toString() + '.'+response.assets[0].type)
-        filename.push(response.assets[0]);
-
-      }
-      // filename.push(response);
-      // pic.push(response.fileName);
-      // addfile1(response.fileName)
       console.log('base64 -> ', response.base64);
       console.log('uri -> ', response.uri);
       console.log('width -> ', response.width);
@@ -353,11 +309,188 @@ const requestExternalWritePermission = async () => {
       console.log('fileSize -> ', response.fileSize);
       console.log('type -> ', response.type);
       console.log('fileName -> ', response.fileName);
-    
-      setimageRes(response);
+      // setFilePath(response.assets[0]);
+
+      addfile1('Scan_'+new Date().getTime().toString() + '.'+response.assets[0].type)
+      filename.push(response.assets[0]);
       refRBSheet.current.close();
     });
   };
+
+
+
+
+  // const cameraLaunch = () => {
+
+    // let options = {
+    //   mediaType: 'photo',
+    //   maxWidth: 300,
+    //   maxHeight: 550,
+    //   quality: 1,
+    //   saveToPhotos: true
+    // };
+
+
+    // const options = {
+    //   title: 'Select Avatar',
+    //   storageOptions: {
+    //     skipBackup: true,
+    //     path: 'images',
+    //   },
+    // };
+
+
+    // Launch Camera:
+    // ImagePicker.launchCamera(options, (response) => {
+    //   // Same code as in above section!
+
+
+    //   if (response.didCancel) {
+    //     console.log('User cancelled image picker');
+    //   } else if (response.error) {
+    //     console.log('ImagePicker Error: ', response.error);
+    //   } else if (response.customButton) {
+    //     console.log('User tapped custom button: ', response.customButton);
+    //   } else {
+    //     // const source = { uri: response.uri };
+
+    //     alert(JSON.stringify(response))
+
+
+    //     // addfile1('Scan_'+new Date().getTime().toString() + '.'+response.type)
+    //     // filename.push(response);
+
+    //     // refRBSheet.current.close();
+     
+    //     // You can also display the image using data:
+    //     // const source = { uri: 'data:image/jpeg;base64,' + response.data };
+     
+    //     // this.setState({
+    //     //   avatarSource: source,
+    //     // });
+    //   }
+
+
+    // });
+
+
+
+    // launchCamera(options, (res) => {
+    //   console.log('Response = ', res);
+    //   if (res.didCancel) {
+    //     console.log('User cancelled image picker');
+    //   } else if (res.error) {
+    //     alert('ImagePicker Error: ', res.error);
+    //   } else if (res.customButton) {
+    //     console.log('User tapped custom button: ', res.customButton);
+    //     alert(res.customButton);
+       
+    //   } else {
+
+
+    //     if(res.assets){
+    //         addfile1('Scan_'+new Date().getTime().toString() + '.'+res.assets[0].type)
+    //         filename.push(res.assets[0]);
+    //     }
+
+
+    //     // if (res.type){
+    //     //   addfile1('Scan_'+new Date().getTime().toString() + '.'+res.type)
+    //     //   filename.push(res);
+    //     // } else if (res.assets){
+    //     //   addfile1('Scan_'+new Date().getTime().toString() + '.'+res.assets[0].type)
+    //     //   filename.push(res.assets[0]);
+    //     // }
+    //     // pic.push('Scan_'+new Date().getTime().toString() + '.'+res.type);
+    //     // filename.push(res);
+    //     // alert(res.fileName)
+    //     // uploadReportFiles(res);
+    //     // setimageRes(res);
+    //     refRBSheet.current.close();
+    //   }
+    // });
+  // };
+  // setPic(pic => [...pic, res]);
+  const addfile1 = res => {
+    setPic(pic => [ ...pic, res]);
+  };
+
+  // const chooseFile = type => {
+  //   const options = {
+  //     // title: 'Select Avatar',
+  //     // storageOptions: {
+  //     //   skipBackup: true,
+  //     //   path: 'images',
+  //     // },
+  //   };
+
+
+    // ImagePicker.launchImageLibrary(options, (response) => {
+    //   console.log('Response = ', response.name);
+     
+    //   if (response.didCancel) {
+    //     console.log('User cancelled image picker');
+    //   } else if (response.error) {
+    //     console.log('ImagePicker Error: ', response.error);
+    //   } else if (response.customButton) {
+    //     console.log('User tapped custom button: ', response.customButton);
+    //   } else {
+    //     const source = { uri: response.uri };
+
+
+    //     addfile1('Scan_'+new Date().getTime().toString() + '.'+response.type)
+    //     filename.push(response);
+
+    //     refRBSheet.current.close();
+
+    //     // console.log()
+     
+    //     // You can also display the image using data:
+    //     // const source = { uri: 'data:image/jpeg;base64,' + response.data };
+     
+    //     // this.setState({
+    //     //   avatarSource: source,
+    //     // });
+    //   }
+    // });
+
+    // let options = {
+    //   mediaType: type,
+    //   maxWidth: 300,
+    //   maxHeight: 550,
+    //   quality: 1,
+    // };
+    // launchImageLibrary(options, response => {
+    //   console.log('Response = ', response);
+    
+    //   if (response.didCancel) {
+    //     alert('User cancelled camera picker');
+    //     return;
+    //   } else if (response.errorCode == 'camera_unavailable') {
+    //     alert('Camera not available on device');
+    //     return;
+    //   } else if (response.errorCode == 'permission') {
+    //     alert('Permission not satisfied');
+    //     return;
+    //   } else if (response.errorCode == 'others') {
+    //     alert(response.errorMessage);
+    //     return;
+    //   }
+
+    //   if (response.type){
+    //     addfile1('Scan_'+new Date().getTime().toString() + '.'+response.type)
+    //     filename.push(response);
+
+    //   } else if (response.assets){
+    //     addfile1('Scan_'+new Date().getTime().toString() + '.'+response.assets[0].type)
+    //     filename.push(response.assets[0]);
+
+    //   }
+    
+    //   setimageRes(response);
+    //   refRBSheet.current.close();
+    // });
+  // };
   const selectMultipleFile = async () => {
     //Opening Document Picker for selection of multiple file
     try {
@@ -374,9 +507,9 @@ const requestExternalWritePermission = async () => {
         console.log('File Size : ' + res.size);
         // alert(JSON.stringify(res.name))
 
-      console.log('selectMultipleFile ++++++++++', res)
+      // console.log('selectMultipleFile ++++++++++', res)
 
-      alert(JSON.stringify(res))
+      // alert(JSON.stringify(res))
 
 
         if(res.type){

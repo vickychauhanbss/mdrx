@@ -73,9 +73,9 @@ export const uploadReport = data => dispatch => {
   // const params = `/${userPhn}`; // 9818125787
 
 
-  alert(JSON.stringify(data))
+  // alert(JSON.stringify(data))
 
-  console.log('record data++++++++',data);
+  // console.log('record data++++++++',data);
   const config = {
     method: 'POST',
     url:
@@ -93,7 +93,7 @@ export const uploadReport = data => dispatch => {
   ApiConnect(config)
     .then(response => {
 
-      alert(JSON.stringify(response))
+      // alert(JSON.stringify(response))
       // console.log('record response+++++++++', response);
       if (response.status == 201) {
         console.log(response.data);
@@ -109,7 +109,7 @@ export const uploadReport = data => dispatch => {
       }
     })
     .catch(err => {
-      alert(JSON.stringify(err))
+      // alert(JSON.stringify(err))
 
       dispatch(reportUplodFail(err));
     });
